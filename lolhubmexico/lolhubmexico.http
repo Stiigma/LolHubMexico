@@ -1,0 +1,6 @@
+@lolhubmexico_HostAddress = http://localhost:5022
+
+GET {{lolhubmexico_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
