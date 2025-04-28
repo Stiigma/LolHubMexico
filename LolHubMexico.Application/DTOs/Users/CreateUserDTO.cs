@@ -15,6 +15,9 @@ namespace LolHubMexico.Application.DTOs.Users
         [Required]
         [EmailAddress]
         public string Email { get; set; }
+        
+        [Required]
+        public string FullName { get; set; }
 
         [Required]
         public string PhoneNumber {  get; set; }
@@ -23,6 +26,6 @@ namespace LolHubMexico.Application.DTOs.Users
         public string Nacionality { get; set; }
 
         [Required]
-        public string Password { get; set; }
+        public string PasswordHash { get; set; }
     }
 }

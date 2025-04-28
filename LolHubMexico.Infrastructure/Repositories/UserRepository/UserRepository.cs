@@ -26,6 +26,27 @@ namespace LolHubMexico.Infrastructure.Repositories.UserRepository
             return user;
         }
 
+        public async Task<User> UpdateAsync(User user)
+        {
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+            return user;
+        }
+
+        public async Task<User> DeleteAsync(int id)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.IdUser == id);
+            user.Status = 0;
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+            return user;
+        }
+
+        public async Task<User?> GetUserById(int id)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.IdUser == id);
+        }
+
         public async Task<User?> GetByEmailAsync(string email)
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
@@ -43,7 +64,35 @@ namespace LolHubMexico.Infrastructure.Repositories.UserRepository
 
         public async Task<List<User>?> GetAllAsync()
         {
-            return await _context.Users.ToListAsync();
+            return await _context.Users
+                                     .Where(u => u.Status == 1)
+                                     .ToListAsync();
+        }
+
+        public async Task<bool> ExistsByEmailAsync(string email)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+
+            if (user == null) 
+                return false;
+
+            return true;
+        }
+
+        public async Task<bool> ExistsByUserNameAsync(string username)
+        {
+            var userName = await _context.Users.FirstOrDefaultAsync(u => u.UserName.ToLower() == username.ToLower());
+            if (userName == null) return false;
+
+            return true;
+        }
+
+        public async Task<bool> ExistsByPhoneNumberAsync(string phoneNumber)
+        {
+            var PhoneNumber = await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber);
+            if (PhoneNumber == null) return false;
+
+            return true;
         }
     }
 }

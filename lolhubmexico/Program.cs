@@ -4,6 +4,7 @@ using LolHubMexico.Infrastructure.Data;
 using LolHubMexico.Infrastructure.Repositories.UserRepository;
 using LolHubMexico.Application.UserService;
 using LolHubMexico.Domain.Repositories.UserRepository;
+using LolHubMexico.Application.Middlaware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,7 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "LolHubMexico.API", Version = "v1" });
 });
+
 
 // Adding DB context
 builder.Services.AddDbContext<ContextDB>(options =>
@@ -30,6 +32,7 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 app.UseCors("AllowAllOrigins");
 // Configure the HTTP request pipeline.
+app.UseMiddleware<ErrorHandlerMiddleware>();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();  // Habilitar Swagger

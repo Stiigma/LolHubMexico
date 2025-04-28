@@ -10,8 +10,12 @@ namespace LolHubMexico.Application.DTOs.Users
     {
         public int IdUser { get; set; }
         public string UserName { get; set; }
+
+        public string FullName { get; set; }
         public string Email { get; set; }
         public DateTime FechaRegistro { get; set; }
+
+        public string PhoneNumber {get; set; }
 
         public string Nacionality { get; set; }
 
