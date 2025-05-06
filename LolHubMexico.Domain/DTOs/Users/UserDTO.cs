@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LolHubMexico.Application.DTOs.Users
+namespace LolHubMexico.Domain.DTOs.Users
 {
     public class UserDTO
     {
@@ -15,9 +15,14 @@ namespace LolHubMexico.Application.DTOs.Users
         public string Email { get; set; }
         public DateTime FechaRegistro { get; set; }
 
-        public string PhoneNumber {get; set; }
+        public string PhoneNumber { get; set; }
 
         public string Nacionality { get; set; }
+
+        public int Role { get; set; }
+
+        
+
 
     }
 }

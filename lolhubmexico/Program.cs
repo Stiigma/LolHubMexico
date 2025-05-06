@@ -5,6 +5,7 @@ using LolHubMexico.Infrastructure.Repositories.UserRepository;
 using LolHubMexico.Application.UserService;
 using LolHubMexico.Domain.Repositories.UserRepository;
 using LolHubMexico.Application.Middlaware;
+using LolHubMexico.Infrastructure.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,7 @@ builder.Services.AddDbContext<ContextDB>(options =>
 // Registering services
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 builder.Services.AddControllers();
 builder.Services.AddCors(options =>

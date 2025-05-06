@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using LolHubMexico.Domain.Entities.Users;
 using LolHubMexico.Domain.Repositories.UserRepository;
 using Microsoft.Extensions.Logging;
-using LolHubMexico.Application.DTOs.Users;
+using LolHubMexico.Domain.DTOs.Users;
 using LolHubMexico.Application.Exceptions;
 using System.Globalization;
 
@@ -42,6 +42,9 @@ namespace LolHubMexico.Application.UserService
             if (DTO == null)
                 throw new AppException("El DTO fue NULO");
 
+            if (DTO.PasswordHash != DTO.ConfirmPassword)
+                throw new AppException("Las contraseñas no coinciden");
+
             var existsByEmail = await _userRepository.ExistsByEmailAsync(DTO.Email);
 
             if (existsByEmail)
@@ -57,13 +60,15 @@ namespace LolHubMexico.Application.UserService
             if (existsByPhoneNumber)
                 throw new AppException("El numero de celular ya está en uso");
 
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(DTO.PasswordHash);
+
             User user = new User
             {
                 Email = DTO.Email,
                 UserName = DTO.UserName,
                 PhoneNumber = DTO.PhoneNumber,
                 FullName = DTO.FullName,
-                PasswordHash = DTO.PasswordHash,
+                PasswordHash = hashedPassword,
                 Nacionality = DTO.Nacionality,
                 Role = 2,
                 Registration_date = DateTime.Now,
@@ -128,6 +133,28 @@ namespace LolHubMexico.Application.UserService
 
         }
 
+        public async Task<UserDTO> LoginAsync(string email, string password)
+        {
+            var user = await _userRepository.GetByEmailAsync(email);
+            if (user == null)
+                throw new AppException("No se encontró una cuenta con ese correo.");
 
+            if (!BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
+                throw new AppException("La contraseña es incorrecta.");
+
+            var userDTO = new UserDTO
+            {
+                Email = user.Email,
+                IdUser = user.IdUser,
+                FechaRegistro = user.Registration_date,
+                FullName = user.FullName,
+                Nacionality = user.Nacionality,
+                PhoneNumber = user.PhoneNumber,
+                Role = user.Role,
+                UserName = user.UserName,
+            };
+
+            return userDTO; // O puedes mapear un DTO de respuesta si lo prefieres
+        }
     }
 }

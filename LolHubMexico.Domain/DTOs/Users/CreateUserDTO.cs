@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LolHubMexico.Application.DTOs.Users
+namespace LolHubMexico.Domain.DTOs.Users
 {
     public class CreateUserDTO
     {
@@ -27,5 +27,8 @@ namespace LolHubMexico.Application.DTOs.Users
 
         [Required]
         public string PasswordHash { get; set; }
+        [Required]
+        public string ConfirmPassword { get; set; }
+
     }
 }
