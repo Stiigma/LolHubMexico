@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\LolHubMexico.Application\LolHubMexico.Application.csproj" />
     <ProjectReference Include="..\LolHubMexico.Domain\LolHubMexico.Domain.csproj" />
   </ItemGroup>
 

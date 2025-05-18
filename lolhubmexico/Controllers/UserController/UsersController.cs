@@ -72,5 +72,15 @@ namespace LolHubMexico.API.Controllers.UserController
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchUsers([FromQuery] string query, int requesterId)
+        {
+            if (string.IsNullOrWhiteSpace(query) || query.Length < 2)
+                return BadRequest("La búsqueda debe tener al menos 2 caracteres.");
+
+            var result = await _userService.SearchUsersByNameAsync(query, requesterId);
+            return Ok(result);
+        }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LolHubMexico.Domain.Entities.Users;
+using LolHubMexico.Domain.DTOs.Users;
 
 namespace LolHubMexico.Domain.Repositories.UserRepository
 {
@@ -16,6 +17,8 @@ namespace LolHubMexico.Domain.Repositories.UserRepository
         Task<User> DeleteAsync(int id);
 
         Task<User?> GetUserById(int id);
+
+        Task<List<UserSearchDTO>> SearchUsersByNameAsync(string query);
 
         Task<User?> GetByEmailAsync(string email);
         Task<User?> GetByUsernameAsync(string username);

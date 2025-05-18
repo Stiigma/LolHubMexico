@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using LolHubMexico.Domain.DTOs.Users;
 using LolHubMexico.Application.Exceptions;
 using System.Globalization;
+using LolHubMexico.Domain.Repositories.TeamRepository;
 
 
 namespace LolHubMexico.Application.UserService
@@ -16,12 +17,14 @@ namespace LolHubMexico.Application.UserService
     public class UserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly ITeamRepository _teamRepository;
         private readonly ILogger<UserService> _logger;
 
-        public UserService(IUserRepository userRepository, ILogger<UserService> logger)
+        public UserService(IUserRepository userRepository, ILogger<UserService> logger, ITeamRepository teamRepository)
         {
             _userRepository = userRepository;
             _logger = logger;
+            _teamRepository = teamRepository;
         }
 
         public async Task<List<User>?> GetAllAsync()
@@ -78,6 +81,26 @@ namespace LolHubMexico.Application.UserService
             return await _userRepository.CreateAsync(user);
 
         }
+
+
+
+        public async Task<List<UserSearchDTO>> SearchUsersByNameAsync(string query, int requesterId)
+        {
+            var userList = await _userRepository.SearchUsersByNameAsync(query);
+
+
+            var filteredList = userList
+                .Where(u => u.IdUser != requesterId) // ← aquí filtramos al usuario logueado
+                .ToList();
+
+            foreach (var user in filteredList)
+            {
+                user.status = await _teamRepository.IsUserInAnyTeam(user.IdUser) ? 1 : 0;
+            }
+
+            return userList;
+        }
+
 
         public async Task<User> UpdateUserAsync(UserDTO DTO)
         {

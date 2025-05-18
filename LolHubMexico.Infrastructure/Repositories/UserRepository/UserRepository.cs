@@ -7,6 +7,7 @@ using LolHubMexico.Domain.Repositories.UserRepository;
 using LolHubMexico.Infrastructure.Data;
 using LolHubMexico.Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
+using LolHubMexico.Domain.DTOs.Users;
 namespace LolHubMexico.Infrastructure.Repositories.UserRepository
 {
     public class UserRepository : IUserRepository
@@ -40,6 +41,22 @@ namespace LolHubMexico.Infrastructure.Repositories.UserRepository
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
             return user;
+        }
+
+
+        public async Task<List<UserSearchDTO>> SearchUsersByNameAsync(string query)
+        {
+            return await _context.Users
+                .Where(u => u.UserName.Contains(query))
+                .OrderBy(u => u.UserName)
+                .Select(u => new UserSearchDTO
+                {
+                    IdUser = u.IdUser,
+                    UserName = u.UserName,
+                    //AvatarUrl = u.AvatarUrl
+                })
+                .Take(10)
+                .ToListAsync();
         }
 
         public async Task<User?> GetUserById(int id)
