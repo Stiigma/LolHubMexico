@@ -9,7 +9,7 @@ using LolHubMexico.Application.Exceptions;
 using LolHubMexico.Domain.Entities.Teams;
 using LolHubMexico.Domain.Repositories.UserRepository;
 
-namespace LolHubMexico.Application.TeamService
+namespace LolHubMexico.Application
 {
     public class TeamService 
     {
@@ -60,6 +60,16 @@ namespace LolHubMexico.Application.TeamService
             return createdTeam;
         }
 
+        public async Task<bool> IsUserWithTeam(int idUser)
+        {
+            if (idUser == null)
+                throw new AppException("No se aceptan nulos");
+
+            bool response = await _teamRepository.IsUserInAnyTeam(idUser);
+
+            return response;
+        }
+
 
         public async Task<Team> GetTeamByUserId(int? idUser)
         {
@@ -92,6 +102,40 @@ namespace LolHubMexico.Application.TeamService
                 
 
 
+        }
+
+        public async Task<bool> JoinTeam(JoinTeamDTO dto)
+        {
+            if(dto == null)
+                throw new AppException("dto vacio");
+
+            if (!dto.response)
+                return false;
+
+            TeamMember teamMember = new TeamMember
+            {
+                IdTeam = dto.IdTeam,
+                IdUser = dto.IdUser,
+                Join_date = DateTime.Now,
+                Status = 1,
+                Role = "Flex-Rol",
+            };
+
+            await _teamRepository.AddMember(teamMember);
+
+            return true;
+
+        }
+
+
+        public async Task<bool> IsCapitan(int IdCapitan)
+        {
+            if (IdCapitan == null)
+                throw new AppException("Id Vacio");
+
+            bool response = await _teamRepository.ExistsCapitanAsync(IdCapitan);
+
+            return response;
         }
     }
 }

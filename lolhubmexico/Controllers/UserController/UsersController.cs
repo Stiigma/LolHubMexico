@@ -53,7 +53,7 @@ namespace LolHubMexico.API.Controllers.UserController
         {
             try
             {
-                var user = await _userService.LoginAsync(loginUserDTO.credencial,loginUserDTO.password);
+                var user = await _userService.LoginAsync(loginUserDTO.credencial);
 
                 var dtoToToken = new UserTokenDTO
                 {

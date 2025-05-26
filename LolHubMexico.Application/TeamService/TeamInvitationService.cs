@@ -8,7 +8,7 @@ using LolHubMexico.Domain.Entities.Notifications;
 using LolHubMexico.Domain.Notifications;
 using LolHubMexico.Domain.Repositories.TeamRepository;
 
-namespace LolHubMexico.Application.TeamService
+namespace LolHubMexico.Application
 {
     public class TeamInvitationService
     {
@@ -47,12 +47,15 @@ namespace LolHubMexico.Application.TeamService
 
             var listTI = await _invitationRepo.GetPendingInvitationsForUserAsync(idUser);
 
-            if(listTI == null)
+            if (listTI == null)
                 throw new InvalidOperationException("No Existen Invitaciones");
 
             return listTI;
 
         }
+
+
+
 
 
     }

@@ -111,5 +111,12 @@ namespace LolHubMexico.Infrastructure.Repositories.TeamRepository
                 .AnyAsync(m => m.IdUser == userId && m.Status == 1); // o el campo que indique si está activo
         }
 
+        public async Task<bool> ExistsCapitanAsync(int idCapitan)
+        {
+            return await _context.Teams.AnyAsync(t => t.IdCapitan == idCapitan);
+        }
+
+        
+
     }
 }

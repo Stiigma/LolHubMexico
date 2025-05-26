@@ -1,4 +1,4 @@
-﻿using LolHubMexico.Application.TeamService;
+﻿using LolHubMexico.Application;
 using LolHubMexico.Domain.DTOs.Notificactions;
 using Microsoft.AspNetCore.Mvc;
 

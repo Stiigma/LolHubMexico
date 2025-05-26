@@ -8,6 +8,7 @@ using LolHubMexico.Domain.Entities.Users;
 using LolHubMexico.Domain.Entities.Notifications;
 
 using LolHubMexico.Domain.Entities.Teams;
+using LolHubMexico.Domain.Entities.Scrims;
 
 namespace LolHubMexico.Infrastructure.Data
 {
@@ -25,5 +26,7 @@ namespace LolHubMexico.Infrastructure.Data
         public DbSet<TeamMember> TeamMembers { get; set; }
 
         public DbSet<TeamInvitation> TeamInvitations {  get; set; }
+
+        public DbSet<Scrim> Scrims { get; set; }
     }
 }

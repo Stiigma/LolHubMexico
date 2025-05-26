@@ -18,5 +18,7 @@ namespace LolHubMexico.Domain.Repositories.TeamRepository
         Task<TeamMember> AddMember(TeamMember newMember);
         Task<bool> IsUserInAnyTeam(int userId);
 
+        Task<bool> ExistsCapitanAsync(int idCapitan);
+
     }
 }

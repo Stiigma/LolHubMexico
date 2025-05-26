@@ -10,6 +10,7 @@ using LolHubMexico.Domain.DTOs.Users;
 using LolHubMexico.Application.Exceptions;
 using System.Globalization;
 using LolHubMexico.Domain.Repositories.TeamRepository;
+using FirebaseAdmin.Auth;
 
 
 namespace LolHubMexico.Application.UserService
@@ -45,8 +46,8 @@ namespace LolHubMexico.Application.UserService
             if (DTO == null)
                 throw new AppException("El DTO fue NULO");
 
-            if (DTO.PasswordHash != DTO.ConfirmPassword)
-                throw new AppException("Las contraseñas no coinciden");
+            //if (DTO.PasswordHash != DTO.ConfirmPassword)
+            //    throw new AppException("Las contraseñas no coinciden");
 
             var existsByEmail = await _userRepository.ExistsByEmailAsync(DTO.Email);
 
@@ -63,7 +64,7 @@ namespace LolHubMexico.Application.UserService
             if (existsByPhoneNumber)
                 throw new AppException("El numero de celular ya está en uso");
 
-            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(DTO.PasswordHash);
+            //string hashedPassword = BCrypt.Net.BCrypt.HashPassword(DTO.PasswordHash);
 
             User user = new User
             {
@@ -71,7 +72,8 @@ namespace LolHubMexico.Application.UserService
                 UserName = DTO.UserName,
                 PhoneNumber = DTO.PhoneNumber,
                 FullName = DTO.FullName,
-                PasswordHash = hashedPassword,
+                FirebaseUid = DTO.FirebaseUid,
+               // PasswordHash = hashedPassword,
                 Nacionality = DTO.Nacionality,
                 Role = 2,
                 Registration_date = DateTime.Now,
@@ -156,14 +158,26 @@ namespace LolHubMexico.Application.UserService
 
         }
 
-        public async Task<UserDTO> LoginAsync(string email, string password)
+        public async Task<UserDTO> LoginAsync(string firebaseToken)
         {
+            FirebaseToken decodedToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(firebaseToken);
+            string firebaseUid = decodedToken.Uid;
+            string? email = decodedToken.Claims.ContainsKey("email")
+            ? decodedToken.Claims["email"]?.ToString()
+            : null;
+
+            if (string.IsNullOrWhiteSpace(firebaseToken))
+                throw new AppException("Token de Firebase no proporcionado.");
+
+            if (email == null)
+                throw new AppException("El token no contiene un correo válido.");
+
             var user = await _userRepository.GetByEmailAsync(email);
             if (user == null)
                 throw new AppException("No se encontró una cuenta con ese correo.");
 
-            if (!BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
-                throw new AppException("La contraseña es incorrecta.");
+            if(firebaseUid != user.FirebaseUid)
+                throw new AppException("El Uid no es correcto");
 
             var userDTO = new UserDTO
             {

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using LolHubMexico.Application.TeamService;
+using LolHubMexico.Application;
 using LolHubMexico.Domain.DTOs.Teams;
 using LolHubMexico.Application.Exceptions;
 using LolHubMexico.Domain.DTOs.Notificactions;

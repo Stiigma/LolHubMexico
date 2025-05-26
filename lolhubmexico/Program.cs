@@ -8,11 +8,14 @@ using LolHubMexico.Application.Middlaware;
 using LolHubMexico.Infrastructure.Security;
 using LolHubMexico.Domain.Repositories.TeamRepository;
 using LolHubMexico.Infrastructure.Repositories.TeamRepository;
-using LolHubMexico.Application.TeamService;
+using LolHubMexico.Application;
 //using Microsoft.AspNet.SignalR.WebSockets;
 using LolHubMexico.API.WebSockets;
 using LolHubMexico.API.Notifiers;
 using LolHubMexico.Domain.Notifications;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
+using LolHubMexico.Application.ScrimService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +25,12 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "LolHubMexico.API", Version = "v1" });
 });
 
+var firebaseCredentialPath = Path.Combine("..", "LolHubMexico.Infrastructure", "Secrets", "lolhubmexico-9fa9f-firebase-adminsdk-fbsvc-db5ca683e3.json");
+
+FirebaseApp.Create(new AppOptions()
+{
+    Credential = GoogleCredential.FromFile(firebaseCredentialPath)
+});
 
 // Adding DB context
 builder.Services.AddDbContext<ContextDB>(options =>
@@ -29,7 +38,7 @@ builder.Services.AddDbContext<ContextDB>(options =>
 
 // Registering services
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<UserService>();
+
 builder.Services.AddSingleton<WebSocketConnectionManager>();
 builder.Services.AddSingleton<LolHubMexico.API.WebSockets.WebSocketHandler>();
 builder.Services.AddScoped<INotifier, TeamInvitationNotifier>();
@@ -37,11 +46,16 @@ builder.Services.AddScoped<INotifier, TeamInvitationNotifier>();
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
-builder.Services.AddScoped<TeamService>();
+
 builder.Services.AddScoped<ITeamInvitationRepository, TeamInvitationRepository>();
 builder.Services.AddScoped<TeamInvitationService>();
 builder.Services.AddSingleton<INotifierFactory, NotifierFactory>();
 builder.Services.AddScoped<TeamInvitationNotifier>(); // y otros notifiers
+
+//SERVICIOS
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<TeamService>();
+builder.Services.AddScoped<ScrimService>();
 
 builder.Services.AddControllers();
 builder.Services.AddCors(options =>
