@@ -13,9 +13,12 @@ namespace LolHubMexico.Domain.Entities.Users
         public int IdUser { get; set; }
         [Required]
         [MaxLength(320, ErrorMessage = "El FirebaseUid no puede tener más de 320 caracteres.")]
-        public string FirebaseUid { get; set; }
+        public string FirebaseUid { get; set; } = string.Empty;
         public string UserName { get; set; }
 
+        public string PasswordHash { get; set; }
+
+        //public string ConfirmPassword { get; set; }
 
         public string FullName { get; set; }
         public string Email { get; set; }

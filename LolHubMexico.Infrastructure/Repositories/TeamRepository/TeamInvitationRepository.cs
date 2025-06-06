@@ -34,6 +34,7 @@ namespace LolHubMexico.Infrastructure.Repositories.TeamRepository
         public async Task UpdateAsync(TeamInvitation invitation)
         {
             _context.TeamInvitations.Update(invitation);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<bool> ExistsPendingInvitationAsync(int idTeam, int idUser)

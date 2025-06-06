@@ -10,6 +10,8 @@ namespace LolHubMexico.Domain.DTOs.Teams
     {
         public int IdUser { get; set; }
 
+        public int IdInvitation { get; set; }
+
         public int IdTeam { get; set; } 
 
         public bool response { get; set; }

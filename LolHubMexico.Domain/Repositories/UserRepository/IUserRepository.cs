@@ -29,5 +29,10 @@ namespace LolHubMexico.Domain.Repositories.UserRepository
         Task<bool> ExistsByUserNameAsync(string username);
 
         Task<bool> ExistsByPhoneNumberAsync(string phoneNumber);
+
+
+        Task<bool> ChangeStatus(int idUser, int newStatus);
+
+        Task<bool> ChangeRol(int idUser, int newRole);
     }
 }

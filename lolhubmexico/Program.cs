@@ -2,7 +2,7 @@ using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
 using LolHubMexico.Infrastructure.Data;
 using LolHubMexico.Infrastructure.Repositories.UserRepository;
-using LolHubMexico.Application.UserService;
+using LolHubMexico.Application.UserServices;
 using LolHubMexico.Domain.Repositories.UserRepository;
 using LolHubMexico.Application.Middlaware;
 using LolHubMexico.Infrastructure.Security;
@@ -16,6 +16,12 @@ using LolHubMexico.Domain.Notifications;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using LolHubMexico.Application.ScrimService;
+using LolHubMexico.Application.Interfaces;
+using LolHubMexico.Infrastructure.Services;
+using LolHubMexico.Application.PlayerService;
+using LolHubMexico.Domain.Repositories.ScrimRepository;
+using LolHubMexico.Domain.Repositories.PlayerRepository;
+using LolHubMexico.Infrastructure.Repositories.PlayerRepository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,6 +52,8 @@ builder.Services.AddScoped<INotifier, TeamInvitationNotifier>();
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
+builder.Services.AddScoped<IScrimRepository, ScrimRepository>();
+builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
 
 builder.Services.AddScoped<ITeamInvitationRepository, TeamInvitationRepository>();
 builder.Services.AddScoped<TeamInvitationService>();
@@ -56,6 +64,9 @@ builder.Services.AddScoped<TeamInvitationNotifier>(); // y otros notifiers
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<TeamService>();
 builder.Services.AddScoped<ScrimService>();
+builder.Services.AddScoped<IRiotService, RiotService>();
+builder.Services.AddScoped<IPlayerService, PlayerService>();
+
 
 builder.Services.AddControllers();
 builder.Services.AddCors(options =>

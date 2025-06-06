@@ -1,5 +1,7 @@
 ﻿using LolHubMexico.Application;
+using LolHubMexico.Application.Exceptions;
 using LolHubMexico.Domain.DTOs.Notificactions;
+using LolHubMexico.Domain.DTOs.Teams;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LolHubMexico.API.Controllers.TeamController
@@ -9,10 +11,12 @@ namespace LolHubMexico.API.Controllers.TeamController
     public class TeamInvitationController : ControllerBase
     {
         private readonly TeamInvitationService _invitationService;
+        private readonly TeamService _teamService;
 
-        public TeamInvitationController(TeamInvitationService invitationService)
+        public TeamInvitationController(TeamInvitationService invitationService, TeamService teamService)
         {
             _invitationService = invitationService;
+            _teamService = teamService;
         }
 
         [HttpPost("invite")]
@@ -49,6 +53,24 @@ namespace LolHubMexico.API.Controllers.TeamController
             catch (Exception ex)
             {
                 return StatusCode(500, new { success = false, message = "Error al enviar la invitación.", error = ex.Message });
+            }
+        }
+
+        [HttpPost("joinTeam")]
+        public async Task<ActionResult> AcceptInvitation([FromBody] JoinTeamDTO responseInvitation)
+        {
+            try
+            {
+                var updatedTeam = await _teamService.JoinTeam(responseInvitation);
+                return Ok(updatedTeam);
+            }
+            catch (AppException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error interno del servidor", detail = ex.Message });
             }
         }
     }

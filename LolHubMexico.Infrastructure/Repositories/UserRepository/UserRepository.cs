@@ -98,7 +98,8 @@ namespace LolHubMexico.Infrastructure.Repositories.UserRepository
 
         public async Task<bool> ExistsByUserNameAsync(string username)
         {
-            var userName = await _context.Users.FirstOrDefaultAsync(u => u.UserName.ToLower() == username.ToLower());
+            var userName = await _context.Users
+                .FirstOrDefaultAsync(u => u.UserName != null && u.UserName.ToLower() == username.ToLower());
             if (userName == null) return false;
 
             return true;
@@ -108,6 +109,32 @@ namespace LolHubMexico.Infrastructure.Repositories.UserRepository
         {
             var PhoneNumber = await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber);
             if (PhoneNumber == null) return false;
+
+            return true;
+        }
+
+        public async Task<bool> ChangeStatus(int idUser, int newStatus)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.IdUser == idUser);
+
+            if (user == null)
+                return false;
+
+            user.Status = newStatus;
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<bool> ChangeRol(int idUser, int newRole)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.IdUser == idUser);
+
+            if (user == null)
+                return false;
+
+            user.Role = newRole;
+            await _context.SaveChangesAsync();
 
             return true;
         }

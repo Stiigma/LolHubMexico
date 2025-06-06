@@ -11,9 +11,10 @@ using LolHubMexico.Application.Exceptions;
 using System.Globalization;
 using LolHubMexico.Domain.Repositories.TeamRepository;
 using FirebaseAdmin.Auth;
+using LolHubMexico.Domain.Enums;
 
 
-namespace LolHubMexico.Application.UserService
+namespace LolHubMexico.Application.UserServices
 {
     public class UserService
     {
@@ -46,8 +47,8 @@ namespace LolHubMexico.Application.UserService
             if (DTO == null)
                 throw new AppException("El DTO fue NULO");
 
-            //if (DTO.PasswordHash != DTO.ConfirmPassword)
-            //    throw new AppException("Las contraseñas no coinciden");
+            if (DTO.PasswordHash != DTO.ConfirmPassword)
+                throw new AppException("Las contraseñas no coinciden");
 
             var existsByEmail = await _userRepository.ExistsByEmailAsync(DTO.Email);
 
@@ -64,7 +65,7 @@ namespace LolHubMexico.Application.UserService
             if (existsByPhoneNumber)
                 throw new AppException("El numero de celular ya está en uso");
 
-            //string hashedPassword = BCrypt.Net.BCrypt.HashPassword(DTO.PasswordHash);
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(DTO.PasswordHash);
 
             User user = new User
             {
@@ -72,8 +73,8 @@ namespace LolHubMexico.Application.UserService
                 UserName = DTO.UserName,
                 PhoneNumber = DTO.PhoneNumber,
                 FullName = DTO.FullName,
-                FirebaseUid = DTO.FirebaseUid,
-               // PasswordHash = hashedPassword,
+                FirebaseUid = " ",
+                PasswordHash = hashedPassword,
                 Nacionality = DTO.Nacionality,
                 Role = 2,
                 Registration_date = DateTime.Now,
@@ -158,26 +159,26 @@ namespace LolHubMexico.Application.UserService
 
         }
 
-        public async Task<UserDTO> LoginAsync(string firebaseToken)
+        public async Task<UserDTO> LoginAsync(LoginUserDTO loginUserDTO)
         {
-            FirebaseToken decodedToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(firebaseToken);
-            string firebaseUid = decodedToken.Uid;
-            string? email = decodedToken.Claims.ContainsKey("email")
-            ? decodedToken.Claims["email"]?.ToString()
-            : null;
+            //FirebaseToken decodedToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(firebaseToken);
+            //string firebaseUid = decodedToken.Uid;
+            //string? email = decodedToken.Claims.ContainsKey("email")
+            //? decodedToken.Claims["email"]?.ToString()
+            //: null;
 
-            if (string.IsNullOrWhiteSpace(firebaseToken))
-                throw new AppException("Token de Firebase no proporcionado.");
+            //if (string.IsNullOrWhiteSpace(firebaseToken))
+            //    throw new AppException("Token de Firebase no proporcionado.");
 
-            if (email == null)
+            if (loginUserDTO.credencial == null)
                 throw new AppException("El token no contiene un correo válido.");
 
-            var user = await _userRepository.GetByEmailAsync(email);
+            var user = await _userRepository.GetByEmailAsync(loginUserDTO.credencial);
             if (user == null)
                 throw new AppException("No se encontró una cuenta con ese correo.");
 
-            if(firebaseUid != user.FirebaseUid)
-                throw new AppException("El Uid no es correcto");
+            //if(firebaseUid != user.FirebaseUid)
+            //    throw new AppException("El Uid no es correcto");
 
             var userDTO = new UserDTO
             {
@@ -192,6 +193,55 @@ namespace LolHubMexico.Application.UserService
             };
 
             return userDTO; // O puedes mapear un DTO de respuesta si lo prefieres
+        }
+
+        public async Task<bool> ExistUser(int id)
+        {
+
+            var user = await _userRepository.GetUserById(id);
+
+            if (user == null)
+                return false;
+
+
+            return true;
+        }
+
+
+        public async Task<bool> ChangeRoleByUserId(int idUser, UserRole role)
+        {
+            if (idUser == null)
+                throw new AppException("El id es Null");
+
+            var IsCahnge = await _userRepository.ChangeRol(idUser,(int)role );
+
+            return IsCahnge;
+
+        }
+
+        public async Task<UserDTO> GetUserById(int idUser)
+        {
+            if(idUser == null)
+                throw new AppException("El id es Null");
+
+            var user = await _userRepository.GetUserById(idUser);
+
+            if(user == null)
+                throw new AppException("Ese Id no existe");
+            
+            var userDTO = new UserDTO
+            {
+                IdUser = user.IdUser,
+                Email = user.Email,
+                FechaRegistro = user.Registration_date,
+                FullName = user.FullName,
+                Nacionality = user.Nacionality,
+                PhoneNumber = user.PhoneNumber,
+                Role = user.Role,
+                UserName = user.UserName,                
+            };
+
+            return userDTO;
         }
     }
 }

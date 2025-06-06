@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ namespace LolHubMexico.Domain.Entities.Scrims
 {
     public class Scrim
     {
+        [Key]
         public int idScrim {  get; set; }
 
         public int created_by { get; set; }

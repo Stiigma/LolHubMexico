@@ -12,6 +12,8 @@ namespace LolHubMexico.Domain.Repositories.TeamRepository
         Task<Team> GetTeamByIdUser(int IdUser);
         Task<TeamMember?> GetTeamMemberByIdUser(int IdUser);
 
+        Task<List<TeamMember>> GetAllTeam(int idTeam);
+
 
         Task<bool> IsExistTeamName(string teamName);
 
@@ -19,6 +21,8 @@ namespace LolHubMexico.Domain.Repositories.TeamRepository
         Task<bool> IsUserInAnyTeam(int userId);
 
         Task<bool> ExistsCapitanAsync(int idCapitan);
+
+        Task<Team> UpdateTeam(Team team);
 
     }
 }

@@ -25,6 +25,8 @@ namespace LolHubMexico.Domain.Entities.Teams
 
         public string DescripcionTeam { get; set; }
 
+        //public string ImagePath { get; set; } = string.Empty;
+
 
         public Team()
         {
@@ -35,6 +37,7 @@ namespace LolHubMexico.Domain.Entities.Teams
             IdCapitan = 0;
             Status = -1;
             DescripcionTeam = string.Empty;
+            //ImagePath = string.Empty;
 
         }
 

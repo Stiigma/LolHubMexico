@@ -13,9 +13,9 @@ namespace LolHubMexico.Domain.DTOs.Users
         [MaxLength(30, ErrorMessage = "El usuario no puede tener más de 30 caracteres.")]
         public string UserName { get; set; }
 
-        [Required]
-        [MaxLength(320, ErrorMessage = "El FirebaseUid no puede tener más de 320 caracteres.")]
-        public string FirebaseUid { get; set; }
+        //[Required]
+        //[MaxLength(320, ErrorMessage = "El FirebaseUid no puede tener más de 320 caracteres.")]
+        //public string FirebaseUid { get; set; }
 
         [Required]
         [EmailAddress]
@@ -33,6 +33,13 @@ namespace LolHubMexico.Domain.DTOs.Users
         [Required]
         [MaxLength(40, ErrorMessage = "La nacionalidad no puede tener más de 40 caracteres.")]
         public string Nacionality { get; set; }
+
+        [Required]
+        [MaxLength(40, ErrorMessage = "La nacionalidad no puede tener más de 40 caracteres.")]
+        public string PasswordHash { get; set; }
+        [Required]
+        [MaxLength(40, ErrorMessage = "La nacionalidad no puede tener más de 40 caracteres.")]
+        public string ConfirmPassword { get; set; }
 
     }
 }

@@ -16,5 +16,11 @@ namespace LolHubMexico.Domain.Repositories.ScrimRepository
 
         public Task<Scrim?> GetScrimById(int idScrim);
 
+
+        public Task<List<Scrim>> GetAllScrims();
+
+        public Task<List<Scrim>> GetScrimsByTeam1(int idTeam);
+        public Task<List<Scrim>> GetScrimsByTeam2(int idTeam);
+
     }
 }

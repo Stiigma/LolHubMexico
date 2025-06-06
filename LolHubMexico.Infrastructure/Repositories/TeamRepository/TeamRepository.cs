@@ -116,7 +116,35 @@ namespace LolHubMexico.Infrastructure.Repositories.TeamRepository
             return await _context.Teams.AnyAsync(t => t.IdCapitan == idCapitan);
         }
 
-        
+        public async Task<List<TeamMember>> GetAllTeam(int idTeam)
+        {
+            var lstTeamMembers = await _context.TeamMembers.Where(tm => tm.IdTeam == idTeam).ToListAsync();
+
+            if(lstTeamMembers.Count == 0) return new List<TeamMember>();
+
+            return lstTeamMembers;
+        }
+
+
+        public async Task<Team> UpdateTeam(Team team)
+        {
+            var existingTeam = await _context.Teams.FindAsync(team.IdTeam);
+
+            if (existingTeam == null)
+                throw new Exception("El equipo no existe.");
+
+            // Actualizamos los campos necesarios
+            existingTeam.TeamName = team.TeamName;
+            existingTeam.IdCapitan = team.IdCapitan;
+            existingTeam.DescripcionTeam = team.DescripcionTeam;
+            existingTeam.TeamLogo = team.TeamLogo;
+            existingTeam.Status = team.Status;
+
+            await _context.SaveChangesAsync();
+            return existingTeam;
+        }
+
+
 
     }
 }

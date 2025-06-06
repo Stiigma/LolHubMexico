@@ -8,6 +8,7 @@ using LolHubMexico.Domain.DTOs.Teams;
 using LolHubMexico.Application.Exceptions;
 using LolHubMexico.Domain.Entities.Teams;
 using LolHubMexico.Domain.Repositories.UserRepository;
+using LolHubMexico.Domain.Enums.TeamInvitation;
 
 namespace LolHubMexico.Application
 {
@@ -15,11 +16,13 @@ namespace LolHubMexico.Application
     {
         private readonly ITeamRepository _teamRepository;
         private readonly IUserRepository _userRepository;
+        private readonly ITeamInvitationRepository _teamInvitationRepository;
 
-        public TeamService(ITeamRepository teamRepository, IUserRepository userRepository)
+        public TeamService(ITeamRepository teamRepository, IUserRepository userRepository, ITeamInvitationRepository teamInvitationRepository)
         {
             _teamRepository = teamRepository;
             _userRepository = userRepository;
+            _teamInvitationRepository = teamInvitationRepository;
         }
 
         public async Task<Team> CreateTeamAsync(CreateTeamDTO newTeam)
@@ -82,7 +85,7 @@ namespace LolHubMexico.Application
             if (await _teamRepository.IsUserInAnyTeam((int)idUser))
             {
                 var team = await _teamRepository.GetTeamByIdUser((int)idUser);
-                if(team != null)
+                if(team.Status != -1)
                     return team;
 
                 var MemberT = await _teamRepository.GetTeamMemberByIdUser((int)idUser);
@@ -109,8 +112,15 @@ namespace LolHubMexico.Application
             if(dto == null)
                 throw new AppException("dto vacio");
 
+            var invitation = await _teamInvitationRepository.GetByIdAsync(dto.IdInvitation);
+            if (invitation == null)
+                throw new AppException("No Existe esta invitacion");
             if (!dto.response)
+            {
+                invitation.Status = (int)StatusInvTeam.Negative;
                 return false;
+            }
+                
 
             TeamMember teamMember = new TeamMember
             {
@@ -122,6 +132,9 @@ namespace LolHubMexico.Application
             };
 
             await _teamRepository.AddMember(teamMember);
+            invitation.Status = (int)StatusInvTeam.Accept;
+
+            await _teamInvitationRepository.UpdateAsync(invitation);
 
             return true;
 
@@ -136,6 +149,51 @@ namespace LolHubMexico.Application
             bool response = await _teamRepository.ExistsCapitanAsync(IdCapitan);
 
             return response;
+        }
+
+        public async Task<List<TeamMember>> GetAllTeam(int idTeam)
+        {
+            var lstTeamMembers = await _teamRepository.GetAllTeam(idTeam);
+
+            if(lstTeamMembers == null)
+                throw new AppException("No hay miembros de este id Team");
+
+            if( lstTeamMembers.Count == 0)
+                throw new AppException("No hay miembros de este id Team");
+
+            return lstTeamMembers;
+        }
+
+        public async Task<bool> TeamMemberComplete(int IdTeam)
+        {
+            var lstTeamMembers = await GetAllTeam(IdTeam);
+
+            
+            if(lstTeamMembers.Count < 5)
+                return false;
+
+            return true;
+        }
+
+        public async Task<List<TeamMember>> GetTeamComplete(int idTeam)
+        {
+            var lstTeamMembers = await GetAllTeam(idTeam);
+
+            if (lstTeamMembers.Count <= 0)
+                throw new AppException("Este Team no tiene Integrantes");
+
+            return lstTeamMembers;
+        }
+
+        public async Task<Team> Update(Team updateTeam)
+        {
+            //if (await _teamRepository.IsExistTeamName(updateTeam.TeamName))
+            //    throw new AppException("Nombre de equipo ya en uso");
+
+            var newTeamUpdate = await _teamRepository.UpdateTeam(updateTeam);
+
+            return newTeamUpdate;
+
         }
     }
 }

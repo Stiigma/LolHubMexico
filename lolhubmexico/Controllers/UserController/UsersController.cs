@@ -1,4 +1,4 @@
-﻿using LolHubMexico.Application.UserService;
+﻿using LolHubMexico.Application.UserServices;
 using LolHubMexico.Domain.Entities.Users;
 using LolHubMexico.Domain.DTOs.Users;
 using Microsoft.AspNetCore.Mvc;
@@ -53,7 +53,7 @@ namespace LolHubMexico.API.Controllers.UserController
         {
             try
             {
-                var user = await _userService.LoginAsync(loginUserDTO.credencial);
+                var user = await _userService.LoginAsync(loginUserDTO);
 
                 var dtoToToken = new UserTokenDTO
                 {
@@ -81,6 +81,23 @@ namespace LolHubMexico.API.Controllers.UserController
 
             var result = await _userService.SearchUsersByNameAsync(query, requesterId);
             return Ok(result);
+        }
+
+        [HttpGet("by-id")]
+        public async Task<IActionResult> GetUserById([FromQuery] int idUser)
+        {
+            try
+            {
+                var user = await _userService.GetUserById(idUser); // Asumiendo que esta función ya existe
+                if (user == null)
+                    return NotFound(new { message = "Usuario no encontrado." });
+
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error interno del servidor", detail = ex.Message });
+            }
         }
     }
 }

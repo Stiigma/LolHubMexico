@@ -37,5 +37,28 @@ namespace LolHubMexico.Domain.Repositories.ScrimRepository
             await _context.SaveChangesAsync();
             return scrim;
         }
+
+        public async Task<List<Scrim>> GetAllScrims()
+        {
+
+            var lstScrims = new List<Scrim>();
+            lstScrims = await _context.Scrims.ToListAsync();
+
+            return lstScrims;
+        }
+
+        public async Task<List<Scrim>> GetScrimsByTeam1(int idTeam)
+        {
+            return await _context.Scrims
+                .Where(s => s.idTeam1 == idTeam && s.status != 2)
+                .ToListAsync();
+        }
+
+        public async Task<List<Scrim>> GetScrimsByTeam2(int idTeam)
+        {
+            return await _context.Scrims
+                .Where(s => s.idTeam2 == idTeam && s.status != 2)
+                .ToListAsync();
+        }
     }
 }

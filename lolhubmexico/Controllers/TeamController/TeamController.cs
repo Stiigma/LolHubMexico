@@ -58,6 +58,59 @@ namespace LolHubMexico.API.Controllers.TeamController
             }
         }
 
+        [HttpPut("update")]
+        public async Task<ActionResult> UpdateTeamAsync([FromBody] Team updateTeam)
+        {
+            try
+            {
+                var updatedTeam = await _teamService.Update(updateTeam);
+                return Ok(updatedTeam);
+            }
+            catch (AppException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error interno del servidor", detail = ex.Message });
+            }
+        }
+
+        [HttpGet("members")]
+        public async Task<IActionResult> GetTeamMembers([FromQuery] int idTeam)
+        {
+            try
+            {
+                var members = await _teamService.GetTeamComplete(idTeam);
+                return Ok(members);
+            }
+            catch (AppException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error interno del servidor", detail = ex.Message });
+            }
+        }
+
+        //[HttpPut("joinTeam")]
+        //public async Task<ActionResult> AcceptInvitation([FromBody] JoinTeamDTO responseInvitation)
+        //{
+        //    try
+        //    {
+        //        var updatedTeam = await _teamService.JoinTeam(responseInvitation);
+        //        return Ok(updatedTeam);
+        //    }
+        //    catch (AppException ex)
+        //    {
+        //        return BadRequest(new { message = ex.Message });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new { message = "Error interno del servidor", detail = ex.Message });
+        //    }
+        //}
         //[HttpPost("invite")]
         //public async Task<IActionResult> Invite([FromBody] List<String> idsNewMembers)
         //{
