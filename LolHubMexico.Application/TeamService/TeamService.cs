@@ -18,6 +18,7 @@ namespace LolHubMexico.Application
         private readonly IUserRepository _userRepository;
         private readonly ITeamInvitationRepository _teamInvitationRepository;
 
+
         public TeamService(ITeamRepository teamRepository, IUserRepository userRepository, ITeamInvitationRepository teamInvitationRepository)
         {
             _teamRepository = teamRepository;

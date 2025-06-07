@@ -60,5 +60,12 @@ namespace LolHubMexico.Domain.Repositories.ScrimRepository
                 .Where(s => s.idTeam2 == idTeam && s.status != 2)
                 .ToListAsync();
         }
+
+        public async Task DeleteScrim(Scrim scrim)
+        {
+            _context.Scrims.Remove(scrim);
+            await _context.SaveChangesAsync();
+
+        }
     }
 }

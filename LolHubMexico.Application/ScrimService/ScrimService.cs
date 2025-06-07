@@ -5,8 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using LolHubMexico.Application;
 using LolHubMexico.Application.Exceptions;
+using LolHubMexico.Application.Interfaces;
+using LolHubMexico.Application.PlayerService;
+using LolHubMexico.Application.UserServices;
 using LolHubMexico.Domain.DTOs.Scrims;
+using LolHubMexico.Domain.Entities.DatailsScrims;
 using LolHubMexico.Domain.Entities.Scrims;
+using LolHubMexico.Domain.Entities.Users;
+using LolHubMexico.Domain.Repositories.PlayerRepository;
 using LolHubMexico.Domain.Repositories.ScrimRepository;
 
 namespace LolHubMexico.Application.ScrimService
@@ -15,9 +21,15 @@ namespace LolHubMexico.Application.ScrimService
     {
         private readonly IScrimRepository _scrimRepository;
         private readonly TeamService _teamService;
-        public ScrimService(IScrimRepository scrimRepository, TeamService scrimService ) { 
+        private readonly UserService _userService;
+        private readonly IPlayerRepository _playerService;
+        private readonly IDetailsScrimRepository _detailsScrimRepository;
+        public ScrimService(IScrimRepository scrimRepository, TeamService scrimService, IDetailsScrimRepository detailsScrimRepository, UserService userService, IPlayerRepository playerService ) { 
             _scrimRepository = scrimRepository;
             _teamService = scrimService;
+            _detailsScrimRepository = detailsScrimRepository;
+            _userService = userService;
+            _playerService = playerService;
         }
 
         public async Task<bool> CreateScrim(CreateScrimDTO newDto)
@@ -44,6 +56,12 @@ namespace LolHubMexico.Application.ScrimService
             if (newDto.created_by != team.IdCapitan)
                 throw new AppException("No es capitan de Equipo");
 
+            var lstDeatails = new List<DetailsScrim>();
+            var scrim = new Scrim
+            {
+                idScrim = 0
+            };
+           
 
             if(newDto.idTeam2 == 0)
             {
@@ -56,7 +74,32 @@ namespace LolHubMexico.Application.ScrimService
                     status = 0
                 };
 
-                await _scrimRepository.CreateScrim(newScrim);
+                scrim = await _scrimRepository.CreateScrim(newScrim);
+
+               
+
+                foreach (var idUser in newDto.idsUsers)
+                {
+                    var user = await _userService.GetUserById(idUser);
+                    var player = await _playerService.GetPlayerByIdUser(idUser);
+                    if (user == null || player == null)
+                    {
+                        await _scrimRepository.DeleteScrim(scrim);
+                        throw new AppException($"Error: Jugador {user!.UserName ?? "Desconocido"} No vinculado");
+
+                    }
+
+
+                    var datails = new DetailsScrim
+                    {
+                        idScrim = scrim.idScrim,
+                        idPlayer = player.IdPlayer,
+                        idUser = user.IdUser,
+                        puuid = player.Puuid,
+                    };
+                    lstDeatails.Add(datails);
+
+                }
 
             }
             else
@@ -77,8 +120,52 @@ namespace LolHubMexico.Application.ScrimService
                     status = 1
                 };
 
-                await _scrimRepository.CreateScrim(newScrim);
+                scrim = await _scrimRepository.CreateScrim(newScrim);
+
+
+
+                foreach (var idUser in newDto.idsUsers)
+                {
+                    var user = await _userService.GetUserById(idUser);
+                    var player = await _playerService.GetPlayerByIdUser(idUser);
+                    if (user == null || player == null)
+                    {
+                        await _scrimRepository.DeleteScrim(scrim);
+                        throw new AppException($"Error: Jugador {user!.UserName ?? "Desconocido"} No vinculado");
+
+                    }
+                        
+
+                    
+                    
+
+                    var datails = new DetailsScrim
+                    {
+                        idScrim = scrim.idScrim,
+                        idPlayer = player.IdPlayer,
+                        idUser = user.IdUser,
+                        puuid = player.Puuid,
+                    };
+
+                    lstDeatails.Add(datails);
+                }
+
             }
+
+            if(lstDeatails.Count >= 5)
+            {
+                foreach (var item in lstDeatails)
+                {
+                    await _detailsScrimRepository.CreateDetailScrim(item);
+                }
+            }
+            else
+            {
+                await _scrimRepository.DeleteScrim(scrim);
+                throw new AppException($"Error: No se completo Los 5 Miembros por Algun Error");
+            }
+
+
 
             return true;
         }

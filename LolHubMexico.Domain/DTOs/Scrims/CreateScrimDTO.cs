@@ -16,5 +16,7 @@ namespace LolHubMexico.Domain.DTOs.Scrims
 
         public DateTime scheduled_date { get; set; }
 
+        public List<int> idsUsers  { get; set; } = new List<int>();
+
     }
 }

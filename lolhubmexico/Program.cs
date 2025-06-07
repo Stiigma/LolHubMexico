@@ -22,6 +22,7 @@ using LolHubMexico.Application.PlayerService;
 using LolHubMexico.Domain.Repositories.ScrimRepository;
 using LolHubMexico.Domain.Repositories.PlayerRepository;
 using LolHubMexico.Infrastructure.Repositories.PlayerRepository;
+using LolHubMexico.Infrastructure.Repositories.ScrimRepository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,7 +60,7 @@ builder.Services.AddScoped<ITeamInvitationRepository, TeamInvitationRepository>(
 builder.Services.AddScoped<TeamInvitationService>();
 builder.Services.AddSingleton<INotifierFactory, NotifierFactory>();
 builder.Services.AddScoped<TeamInvitationNotifier>(); // y otros notifiers
-
+builder.Services.AddScoped<IDetailsScrimRepository, DetailsScrimRepository>();
 //SERVICIOS
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<TeamService>();
