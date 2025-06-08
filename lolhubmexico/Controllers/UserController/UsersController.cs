@@ -107,5 +107,26 @@ namespace LolHubMexico.Controllers.UserController
                 return StatusCode(500, new { message = "Error interno del servidor", detail = ex.Message });
             }
         }
+
+        [HttpPut("update-user")]
+
+        public async Task<IActionResult> UpdateUser([FromQuery] UserDTO userDTO)
+        {
+
+            try
+            {
+                var user = await _userService.UpdateUserAsync(userDTO); 
+                if (user == null)
+                    return NotFound(new { message = "Usuario no encontrado." });
+
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error interno del servidor", detail = ex.Message });
+            }
+        }
     }
+
+
 }

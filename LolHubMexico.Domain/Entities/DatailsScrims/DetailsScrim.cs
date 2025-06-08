@@ -17,6 +17,8 @@ namespace LolHubMexico.Domain.Entities.DatailsScrims
         public int idPlayer { get; set; }
         public int idUser { get; set; }
 
+        public int idTeam {  get; set; }
+
         public string puuid { get; set; }
 
         public string idMatch { get; set; }
@@ -24,7 +26,7 @@ namespace LolHubMexico.Domain.Entities.DatailsScrims
 
         public string carril { get; set; }
 
-        public int totalDamageDealt { get; set; }
+        public string teamDamagePercentage { get; set; }
 
         public int kills { get; set; }
 
