@@ -23,7 +23,7 @@ namespace LolHubMexico.Infrastructure.Services
 
         public async Task<RiotAccountDTO> GetSummonerByNameAsync(string region, string summonerName)
         {
-            var url = $"https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/{summonerName}/LAN?api_key={_apiKey}";
+            var url = $"https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/{summonerName}/{region}?api_key={_apiKey}";
             var response = await _httpClient.GetAsync(url);
 
             if (!response.IsSuccessStatusCode)

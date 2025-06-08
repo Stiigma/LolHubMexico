@@ -96,6 +96,7 @@ namespace LolHubMexico.Application.ScrimService
                         idPlayer = player.IdPlayer,
                         idUser = user.IdUser,
                         puuid = player.Puuid,
+                        idTeam = team.IdTeam,
                     };
                     lstDeatails.Add(datails);
 

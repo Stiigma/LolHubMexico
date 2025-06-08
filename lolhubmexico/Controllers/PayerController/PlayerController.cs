@@ -21,7 +21,7 @@ namespace LolHubMexico.Controllers.PayerController
         {
             try
             {
-                var result = await _playerService.LinkSummonerAsync(request.UserId, request.SummonerName, "LAN", request.MainRole);
+                var result = await _playerService.LinkSummonerAsync(request.UserId, request.SummonerName, request.tagName, request.MainRole);
                 return Ok(result);
             }
             catch (AppException ex)
