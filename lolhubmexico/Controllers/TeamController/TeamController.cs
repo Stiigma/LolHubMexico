@@ -5,7 +5,7 @@ using LolHubMexico.Application.Exceptions;
 using LolHubMexico.Domain.DTOs.Notificactions;
 using LolHubMexico.Domain.Entities.Teams;
 
-namespace LolHubMexico.API.Controllers.TeamController
+namespace LolHubMexico.Controllers.TeamController
 {
     
     [ApiController]

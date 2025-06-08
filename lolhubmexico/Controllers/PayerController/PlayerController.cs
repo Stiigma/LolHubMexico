@@ -3,7 +3,7 @@ using LolHubMexico.Application.Interfaces;
 using LolHubMexico.Domain.DTOs.Players;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LolHubMexico.API.Controllers.PayerController
+namespace LolHubMexico.Controllers.PayerController
 {
     [ApiController]
     [Route("api/[controller]")]

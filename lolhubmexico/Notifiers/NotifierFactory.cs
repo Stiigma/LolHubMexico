@@ -1,6 +1,6 @@
 ﻿using LolHubMexico.Domain.Notifications;
 
-namespace LolHubMexico.API.Notifiers
+namespace LolHubMexico.Notifiers
 {
     public class NotifierFactory : INotifierFactory
     {

@@ -7,7 +7,7 @@ using LolHubMexico.Domain.DTOs.Scrims;
 using LolHubMexico.Domain.DTOs.Teams;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LolHubMexico.API.Controllers.ScrimController
+namespace LolHubMexico.Controllers.ScrimController
 {
     [ApiController]
     [Route("api/[controller]")]

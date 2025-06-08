@@ -1,11 +1,11 @@
-﻿using LolHubMexico.API.WebSockets;
+﻿using LolHubMexico.WebSockets;
 using LolHubMexico.Domain.Notifications;
 using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
 
 
-namespace LolHubMexico.API.Notifiers
+namespace LolHubMexico.Notifiers
 {
     public class TeamInvitationNotifier : INotifier
     {

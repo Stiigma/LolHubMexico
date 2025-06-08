@@ -4,7 +4,7 @@ using LolHubMexico.Domain.DTOs.Notificactions;
 using LolHubMexico.Domain.DTOs.Teams;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LolHubMexico.API.Controllers.TeamController
+namespace LolHubMexico.Controllers.TeamController
 {
     [ApiController]
     [Route("api/[controller]")]

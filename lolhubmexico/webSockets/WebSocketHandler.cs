@@ -2,7 +2,7 @@
 using System.Text;
 using System.Threading.Channels;
 
-namespace LolHubMexico.API.WebSockets
+namespace LolHubMexico.WebSockets
 {
     public class WebSocketHandler
     {

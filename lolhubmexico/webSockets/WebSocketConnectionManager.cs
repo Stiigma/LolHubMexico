@@ -1,7 +1,7 @@
 ﻿using System.Net.WebSockets;
 using System.Collections.Concurrent;
 
-namespace LolHubMexico.API.WebSockets
+namespace LolHubMexico.WebSockets
 {
     public class WebSocketConnectionManager
     {

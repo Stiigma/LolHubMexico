@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using LolHubMexico.Application.Exceptions;
 using LolHubMexico.Domain.Repositories.UserRepository;
 
-namespace LolHubMexico.API.Controllers.UserController
+namespace LolHubMexico.Controllers.UserController
 {
     [ApiController]
     [Route("api/[controller]")]

@@ -9,6 +9,16 @@
 	  <OutputType>Exe</OutputType>
   </PropertyGroup>
 
+
+  <ItemGroup>
+	  <None Update="appsettings.json">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="lolhubmexico-9fa9f-firebase-adminsdk-fbsvc-db5ca683e3.json">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNet.SignalR.Core" Version="2.4.3" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.4" />
@@ -20,6 +30,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LolHubMexico.Application\LolHubMexico.Application.csproj" />
+    <ProjectReference Include="..\LolHubMexico.Domain\LolHubMexico.Domain.csproj" />
     <ProjectReference Include="..\LolHubMexico.Infrastructure\LolHubMexico.Infrastructure.csproj" />
   </ItemGroup>
 
