@@ -21,24 +21,13 @@ namespace LolHubMexico.Controllers.UserController
             _tokenService = tokenService;
         }
 
-        [HttpPost("fake")]
-        public async Task<IActionResult> InsertFakeUser()
+        [HttpGet("ip")]
+        public IActionResult GetIp()
         {
-            var nuevo = new LolHubMexico.Domain.Entities.Users.User
-            {
-                FullName = "Usuario de prueba",
-                UserName = "user_test",
-                Email = "test@example.com",
-                PasswordHash = "123456",
-                Role = 1,
-                PhoneNumber = "1234567890",
-                Nacionality = "MX"
-            };
-            Console.WriteLine($"Cantidad de usuarios: {nuevo.FullName}");
-
-
-            return Ok(new { message = "Usuario insertado correctamente" });
+            var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
+            return Ok(new { ip });
         }
+
 
         [HttpGet("all")]
         public async Task<ActionResult<List<User>>> GetAll()
