@@ -42,7 +42,7 @@ namespace LolHubMexico.Infrastructure.Services
 
         public async Task<RiotSummonerDTO> GetSummonerByPuiid(string puiid)
         {
-            var url = $"https://la1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/{puiid}?api_key={_apiKey}";
+            var url = $"https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/{puiid}?api_key={_apiKey}";
             var response = await _httpClient.GetAsync(url);
 
             if (!response.IsSuccessStatusCode)
@@ -53,11 +53,11 @@ namespace LolHubMexico.Infrastructure.Services
 
             return new RiotSummonerDTO
             {
-                SummonerId = data.id,
-                Puuid = data.puuid,
-                AccountId = data.accountId,
-                ProfileIconId = data.profileIconId,
-                SummonerLevel = data.summonerLevel,
+                SummonerId = data.id ?? "",
+                Puuid = data.puuid ?? "",
+                AccountId = data.accountId ?? "",
+                ProfileIconId = data.profileIconId ?? 0,       // int
+                SummonerLevel = data.summonerLevel ?? 0         // int
             };
 
         }
