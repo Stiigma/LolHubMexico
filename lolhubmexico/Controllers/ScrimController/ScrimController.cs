@@ -7,6 +7,7 @@ using LolHubMexico.Domain.DTOs.Players;
 using LolHubMexico.Domain.DTOs.Scrims;
 using LolHubMexico.Domain.DTOs.Teams;
 using Microsoft.AspNetCore.Mvc;
+using LolHubMexico.Domain.Entities.DatailsScrims;
 
 namespace LolHubMexico.Controllers.ScrimController
 {
@@ -96,12 +97,12 @@ namespace LolHubMexico.Controllers.ScrimController
 
         [HttpGet("details/by-id")]
 
-        public async Task<ActionResult<ScrimPDTO>> GetScrimById(int idScrim)
+        public async Task<ActionResult<List<DetailsScrim>>> GetScrimDetailsById(int idScrim)
         {
             try
             {
 
-                var scrim = await _scrimPlayer.GetScrimById(idScrim);
+                var scrim = await _scrimDetailServices.GetDetailsScrimById(idScrim);
 
                 return Ok(scrim);
             }
@@ -119,14 +120,14 @@ namespace LolHubMexico.Controllers.ScrimController
 
         [HttpPost("accept-scrim")]
 
-        public async Task<ActionResult<ScrimPDTO>> AcceptScrim([FromBody] RivalDTO rival)
+        public async Task<ActionResult<bool>> AcceptScrim([FromBody] RivalDTO rival)
         {
             try
             {
 
-                var scrimPending = await _scrimPlayer.AcceptScrim(rival);
+                var IsAcccept = await _scrimPlayer.AcceptScrim(rival);
 
-                return Ok(scrimPending);
+                return Ok(IsAcccept);
             }
             catch (AppException ex)
             {
