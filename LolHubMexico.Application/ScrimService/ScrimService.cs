@@ -179,14 +179,26 @@ namespace LolHubMexico.Application.ScrimService
         public async Task<bool> AcceptScrim(RivalDTO rivalDTO)
         {
             if(rivalDTO == null) return false;
+            
+            var scrim = await _scrimRepository.GetScrimById(rivalDTO.idScrim);
+
+            if (scrim == null)
+                throw new AppException("La Scrim no existe");
 
             if (!rivalDTO.IsAccept)
+            {
+                
+                scrim.idTeam2 = 0;
+                scrim.status = 0;
+                await _scrimRepository.UpdateScrim(scrim);
                 return false;
+            }
+                //return false;
 
             bool IsCapitan = await _teamService.IsCapitan(rivalDTO.idrival);
 
             if (!IsCapitan)
-                throw new AppException("No es capitan de Equipo");
+                throw new AppException("No eres capitan de Equipo");
 
 
 
@@ -198,18 +210,55 @@ namespace LolHubMexico.Application.ScrimService
             if (!isComplete)
                 throw new AppException("El equipo debe de tener 5 miembros");
 
-            var scrim = await _scrimRepository.GetScrimById(rivalDTO.idScrim);
+           
 
-            if(scrim == null)
-                throw new AppException("La Scrim no existe");
-
+            
 
             scrim.idTeam2 = team.IdTeam;
-            scrim.status = 1;
+            scrim.status = 2;
+
+
+            await _scrimRepository.UpdateScrim(scrim);
+            var lstDeatails = new List<DetailsScrim>();
+
+            foreach (var idUser in rivalDTO.idsUsers)
+            {
+                var user = await _userService.GetUserById(idUser);
+                var player = await _playerService.GetPlayerByIdUser(idUser);
+                if (user == null || player == null)
+                {
+                    throw new AppException($"Error: Jugador {user!.UserName ?? "Desconocido"} No vinculado");
+
+                }
 
 
 
-            return true;
+
+
+                var datails = new DetailsScrim
+                {
+                    idScrim = scrim.idScrim,
+                    idPlayer = player.IdPlayer,
+                    idUser = user.IdUser,
+                    puuid = player.Puuid,
+                };
+
+                lstDeatails.Add(datails);
+            }
+
+            if (lstDeatails.Count >= 5)
+            {
+                foreach (var item in lstDeatails)
+                {
+                    await _detailsScrimRepository.CreateDetailScrim(item);
+                }
+            }
+            else
+            {
+                return false;
+            }
+
+                return true;
 
         }
 
@@ -244,6 +293,33 @@ namespace LolHubMexico.Application.ScrimService
             var allScrims = scrimsTeam1
                 .Concat(scrimsTeam2)
                 //.Where(s => s.Status == 0) // opcional si ya lo filtras en el repo
+                .DistinctBy(s => s.idScrim) // evitar duplicados si aplica
+                .ToList();
+
+            var scrimDTOs = allScrims.Select(s => new ScrimPDTO
+            {
+                idScrim = s.idScrim,
+                idTeam1 = s.idTeam1,
+                idTeam2 = s.idTeam2,
+                scheduled_date = s.scheduled_date,
+                description = s.description,
+                tittle = s.tittle,
+                status = s.status
+            }).ToList();
+
+            return scrimDTOs;
+        }
+
+        public async Task<List<ScrimPDTO>> GetScrimsByIdUserActives(int idUser)
+        {
+            var teamMember = await _teamService.GetTeamByUserId(idUser);
+
+            var scrimsTeam1 = await _scrimRepository.GetScrimsByTeam1(teamMember.IdTeam);
+            var scrimsTeam2 = await _scrimRepository.GetScrimsByTeam2(teamMember.IdTeam);
+
+            var allScrims = scrimsTeam1
+                .Concat(scrimsTeam2)
+                .Where(s => s.status != 0)
                 .DistinctBy(s => s.idScrim) // evitar duplicados si aplica
                 .ToList();
 

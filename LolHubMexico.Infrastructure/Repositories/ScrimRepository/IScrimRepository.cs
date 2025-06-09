@@ -62,14 +62,14 @@ namespace LolHubMexico.Domain.Repositories.ScrimRepository
         public async Task<List<Scrim>> GetScrimsByTeam1(int idTeam)
         {
             return await _context.Scrims
-                .Where(s => s.idTeam1 == idTeam && s.status != 2)
+                .Where(s => s.idTeam1 == idTeam)
                 .ToListAsync();
         }
 
         public async Task<List<Scrim>> GetScrimsByTeam2(int idTeam)
         {
             return await _context.Scrims
-                .Where(s => s.idTeam2 == idTeam && s.status != 2)
+                .Where(s => s.idTeam2 == idTeam)
                 .ToListAsync();
         }
 

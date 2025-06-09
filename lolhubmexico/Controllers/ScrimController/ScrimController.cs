@@ -8,6 +8,7 @@ using LolHubMexico.Domain.DTOs.Scrims;
 using LolHubMexico.Domain.DTOs.Teams;
 using Microsoft.AspNetCore.Mvc;
 using LolHubMexico.Domain.Entities.DatailsScrims;
+using LolHubMexico.Domain.Entities.Scrims;
 
 namespace LolHubMexico.Controllers.ScrimController
 {
@@ -128,6 +129,29 @@ namespace LolHubMexico.Controllers.ScrimController
                 var IsAcccept = await _scrimPlayer.AcceptScrim(rival);
 
                 return Ok(IsAcccept);
+            }
+            catch (AppException ex)
+            {
+                // Error personalizado que lanzas desde el servicio
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                // Otro tipo de error no controlado
+                return StatusCode(500, new { message = "Error interno del servidor", detail = ex.Message });
+            }
+        }
+
+
+        [HttpGet("/active/{idUser}")]
+        public async Task<IActionResult> GetActiveScrimsByUser(int idUser)
+        {
+          
+            try
+            {
+
+                var scrims = await _scrimPlayer.GetScrimsByIdUserActives(idUser);
+                return Ok(scrims);
             }
             catch (AppException ex)
             {
