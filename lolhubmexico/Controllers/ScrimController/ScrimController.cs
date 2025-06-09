@@ -68,6 +68,29 @@ namespace LolHubMexico.Controllers.ScrimController
             }
         }
 
+        [HttpPost("accept-scrim")]
+
+        public async Task<ActionResult<ScrimPDTO>> AcceptScrim()
+        {
+            try
+            {
+
+                var createdScrim = await _scrimPlayer.GetScrimsPending();
+
+                return Ok(createdScrim);
+            }
+            catch (AppException ex)
+            {
+                // Error personalizado que lanzas desde el servicio
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                // Otro tipo de error no controlado
+                return StatusCode(500, new { message = "Error interno del servidor", detail = ex.Message });
+            }
+        }
+
 
     }
 }

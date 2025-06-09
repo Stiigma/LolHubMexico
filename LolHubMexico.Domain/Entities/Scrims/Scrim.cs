@@ -13,6 +13,9 @@ namespace LolHubMexico.Domain.Entities.Scrims
         public int idScrim {  get; set; }
 
         public int created_by { get; set; }
+        public string tittle {  get; set; }
+
+        public string description { get; set; }
 
         public int idTeam1 { get; set; }
 

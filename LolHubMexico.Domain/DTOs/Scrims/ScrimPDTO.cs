@@ -14,6 +14,10 @@ namespace LolHubMexico.Domain.DTOs.Scrims
 
 
         public int idTeam2 { get; set; } = 0;
+
+        public string description { get; set; }
+
+        public string tittle { get; set; }
         public DateTime scheduled_date { get; set; }
 
         public int status { get; set; }

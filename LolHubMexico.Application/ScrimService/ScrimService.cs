@@ -218,7 +218,10 @@ namespace LolHubMexico.Application.ScrimService
                 {
                     idScrim = s.idScrim,
                     idTeam1 = s.idTeam1,
+                    idTeam2 = s.idTeam2,
                     scheduled_date = s.scheduled_date,
+                    description = s.description,
+                    tittle = s.tittle,
                     status = s.status
                 })
                 .ToList();
@@ -245,6 +248,8 @@ namespace LolHubMexico.Application.ScrimService
                 idTeam1 = s.idTeam1,
                 idTeam2 = s.idTeam2,
                 scheduled_date = s.scheduled_date,
+                description = s.description,
+                tittle = s.tittle,
                 status = s.status
             }).ToList();
 
