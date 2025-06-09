@@ -11,6 +11,7 @@ using LolHubMexico.Application.Exceptions;
 using System.Collections;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using LolHubMexico.Domain.Entities.Users;
+using LolHubMexico.Domain.DTOs.Teams;
 
 namespace LolHubMexico.Infrastructure.Repositories.TeamRepository
 {
@@ -29,6 +30,21 @@ namespace LolHubMexico.Infrastructure.Repositories.TeamRepository
             _context.Teams.Add(newTeam);
             await _context.SaveChangesAsync();
             return newTeam;
+        }
+
+        public async Task<List<TeamSearchDTO>> SearchTeamsByNameAsync(string query)
+        {
+            return await _context.Teams
+                .Where(t => t.TeamName.Contains(query))
+                .OrderBy(t => t.TeamName)
+                .Select(t => new TeamSearchDTO
+                {
+                    IdTeam = t.IdTeam,
+                    TeamName = t.TeamName,
+                    TeamLogo = t.TeamLogo
+                })
+                .Take(10)
+                .ToListAsync();
         }
 
         public async Task<List<Team>> GetTeams()

@@ -1,4 +1,5 @@
-﻿using LolHubMexico.Domain.Entities.Teams;
+﻿using LolHubMexico.Domain.DTOs.Teams;
+using LolHubMexico.Domain.Entities.Teams;
 
 namespace LolHubMexico.Domain.Repositories.TeamRepository
 {
@@ -6,6 +7,7 @@ namespace LolHubMexico.Domain.Repositories.TeamRepository
     {
         Task<Team> CreateTeamAsync(Team newTeam);
 
+        Task<List<TeamSearchDTO>> SearchTeamsByNameAsync(string query);
         Task<Team> GetTeamByTeamName(string teamName);
         Task<Team?> GetTeamById(int IdTeam);
 

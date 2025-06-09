@@ -130,6 +130,27 @@ namespace LolHubMexico.Controllers.TeamController
             }
         }
 
+        [HttpGet("search-teams")]
+        public async Task<IActionResult> SearchTeams([FromQuery] string query)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(query) || query.Length < 2)
+                    return BadRequest("La búsqueda debe tener al menos 2 caracteres.");
+
+                var result = await _teamService.SearchTeamsByNameAsync(query);
+                return Ok(result);
+            }
+            catch (AppException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error interno del servidor", detail = ex.Message });
+            }
+        }
+
         //[HttpPut("joinTeam")]
         //public async Task<ActionResult> AcceptInvitation([FromBody] JoinTeamDTO responseInvitation)
         //{

@@ -64,6 +64,10 @@ namespace LolHubMexico.Application
             return createdTeam;
         }
 
+        public async Task<List<TeamSearchDTO>> SearchTeamsByNameAsync(string query)
+        {
+            return await _teamRepository.SearchTeamsByNameAsync(query);
+        }
         public async Task<List<Team>> GetTeams()
         {
             var allTeams = await _teamRepository.GetTeams();            
