@@ -319,7 +319,7 @@ namespace LolHubMexico.Application.ScrimService
 
             var allScrims = scrimsTeam1
                 .Concat(scrimsTeam2)
-                .Where(s => s.status != 0)
+                //.Where(s => s.status != 0)
                 .DistinctBy(s => s.idScrim) // evitar duplicados si aplica
                 .ToList();
 
