@@ -58,7 +58,7 @@ namespace LolHubMexico.Application.ScrimDetailsService
             return lstUserLink;
         }
 
-        public async Task<List<DetailScrimDTO>> GetDetailsScrimById(int idscrim)
+        public async Task<List<DetailsScrim>> GetDetailsScrimById(int idscrim)
         {
             if(idscrim == null)
                 throw new AppException("id null");
@@ -67,28 +67,9 @@ namespace LolHubMexico.Application.ScrimDetailsService
 
             if(lstDetails == null)
                 throw new AppException("No tiene detalles por procesar");
-            
-            var dtoList = lstDetails.Select(d => new DetailScrimDTO
-            {
-                idDetailsScrim = d.idDetailsScrim,
-                idTeam = d.idTeam,
-                puuid = d.puuid,
-                idMatch = d.idMatch ?? string.Empty,
-                carril = d.carril ?? string.Empty,
-                teamDamagePercentage = d.teamDamagePercentage ?? string.Empty,
-                kills = d.kills,
-                deaths = d.deaths,
-                assists = d.assists,
-                goldEarned = d.goldEarned,
-                farm = d.farm,
-                visionScore = d.visionScore,
-                championName = d.championName ?? string.Empty,
-                nivel = d.nivel,
-                items = d.items ?? string.Empty
-            
-            }).ToList();
+           
 
-            return dtoList;
+            return lstDetails;
         }
     }
 }
