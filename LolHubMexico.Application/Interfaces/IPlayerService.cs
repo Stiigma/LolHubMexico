@@ -11,5 +11,7 @@ namespace LolHubMexico.Application.Interfaces
     {
         Task<RspPlayerLinkDTO> LinkSummonerAsync(int userId, string summonerName, string region, string MainRole);
         public Task<PlayerDTO> GetPlayerByIdUser(int idUser);
+
+
     }
 }

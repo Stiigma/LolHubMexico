@@ -10,10 +10,12 @@ namespace LolHubMexico.Controllers.PayerController
     public class PlayerController : ControllerBase
     {
         private readonly IPlayerService _playerService;
+        private readonly IRiotService _iotService;
 
-        public PlayerController(IPlayerService playerService)
+        public PlayerController(IPlayerService playerService, IRiotService iotService)
         {
             _playerService = playerService;
+            _iotService = iotService;
         }
 
         [HttpPost("link")]
@@ -35,7 +37,25 @@ namespace LolHubMexico.Controllers.PayerController
                 return StatusCode(500, new { message = "Error interno del servidor", detail = ex.Message });
             }
         }
-        
+
+        [HttpGet("prueba/{idmatch}")]
+        public async Task<ActionResult<PlayerDTO>> GetPrueba(int idmatch)
+        {
+            try
+            {
+                var player = await _iotService.GetStatsByMatchIdAsync(idmatch);
+                return Ok(player);
+            }
+            catch (AppException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error interno del servidor", detail = ex.Message });
+            }
+        }
+
         [HttpGet("by-user")]
         public async Task<ActionResult<PlayerDTO>> GetPlayerByIdUser([FromQuery] int idUser)
         {

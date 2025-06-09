@@ -28,7 +28,7 @@ using LolHubMexico.Application.ScrimDetailsService;
 var builder = WebApplication.CreateBuilder(args);
 
 // Obtener puerto desde variable de entorno para Cloud Run
-var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
 builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
 
 // Add services
