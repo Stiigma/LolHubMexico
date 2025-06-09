@@ -74,6 +74,19 @@ namespace LolHubMexico.Application
             return response;
         }
 
+        public async Task<Team> getTeamById(int idTeam)
+        {
+            if (idTeam == null)
+                throw new AppException("No se aceptan nulos");
+
+            var response = await _teamRepository.GetTeamById(idTeam);
+
+            if (response == null)
+                throw new AppException("No Existe ese Team");
+
+            return response;
+        }
+
 
         public async Task<Team> GetTeamByUserId(int? idUser)
         {

@@ -29,11 +29,19 @@ namespace LolHubMexico.Infrastructure.Repositories.UserRepository
 
         public async Task<User> UpdateAsync(User user)
         {
-            _context.Users.Update(user);
-            await _context.SaveChangesAsync();
-            return user;
-        }
+            var userInDb = await _context.Users.FirstOrDefaultAsync(u => u.IdUser == user.IdUser);
+            if (userInDb == null) return null;
 
+            userInDb.FullName = user.FullName;
+            userInDb.Email = user.Email;
+            userInDb.Nacionality = user.Nacionality;
+            userInDb.PhoneNumber = user.PhoneNumber;
+            userInDb.Status = user.Status;
+            userInDb.Role = user.Role;
+            userInDb.UserName = user.UserName;
+            await _context.SaveChangesAsync();
+            return userInDb;
+        }
         public async Task<User> DeleteAsync(int id)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.IdUser == id);

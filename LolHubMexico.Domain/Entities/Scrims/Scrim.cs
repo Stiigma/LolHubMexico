@@ -22,7 +22,7 @@ namespace LolHubMexico.Domain.Entities.Scrims
 
         public int status { get; set; }
 
-        public string result { get; set; }
+        public string result { get; set; } = string.Empty;
 
         public DateTime created_at { get; set; }
     }
