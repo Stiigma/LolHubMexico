@@ -256,6 +256,31 @@ namespace LolHubMexico.Application.ScrimService
             return scrimDTOs;
         }
 
+        public async Task<ScrimPDTO> GetScrimById( int idscrim)
+        {
+            if(idscrim == null)
+                throw new AppException("valor nullo");
+
+            var scrim = await _scrimRepository.GetScrimById(idscrim);
+            if(scrim == null)
+                throw new AppException("No existe id");
+
+            var newScrimdto = new ScrimPDTO
+            {
+                idScrim = scrim.idScrim,
+                idTeam1 = scrim.idTeam1,
+                idTeam2 = scrim.idTeam2,
+                scheduled_date = scrim.scheduled_date,
+                tittle = scrim.tittle,
+                description = scrim.description,
+                status = scrim.status
+
+            };
+
+            return newScrimdto;
+
+        }
+
         public async Task<ScrimPDTO> updateScrim(ScrimPDTO scrimPDTO)
         {
             if (scrimPDTO == null)

@@ -71,6 +71,52 @@ namespace LolHubMexico.Controllers.ScrimController
             }
         }
 
+        [HttpGet("by-id")]
+
+        public async Task<ActionResult<ScrimPDTO>> GetScrimById(int idScrim)
+        {
+            try
+            {
+
+                var scrim = await _scrimPlayer.GetScrimById(idScrim);
+
+                return Ok(scrim);
+            }
+            catch (AppException ex)
+            {
+                // Error personalizado que lanzas desde el servicio
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                // Otro tipo de error no controlado
+                return StatusCode(500, new { message = "Error interno del servidor", detail = ex.Message });
+            }
+        }
+
+        [HttpGet("details/by-id")]
+
+        public async Task<ActionResult<ScrimPDTO>> GetScrimById(int idScrim)
+        {
+            try
+            {
+
+                var scrim = await _scrimPlayer.GetScrimById(idScrim);
+
+                return Ok(scrim);
+            }
+            catch (AppException ex)
+            {
+                // Error personalizado que lanzas desde el servicio
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                // Otro tipo de error no controlado
+                return StatusCode(500, new { message = "Error interno del servidor", detail = ex.Message });
+            }
+        }
+
         [HttpPost("accept-scrim")]
 
         public async Task<ActionResult<ScrimPDTO>> AcceptScrim([FromBody] RivalDTO rival)
