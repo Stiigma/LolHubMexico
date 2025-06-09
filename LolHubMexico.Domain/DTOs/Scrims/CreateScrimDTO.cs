@@ -18,5 +18,9 @@ namespace LolHubMexico.Domain.DTOs.Scrims
 
         public List<int> idsUsers  { get; set; } = new List<int>();
 
+        public string description { get; set; }
+
+        public string tittle { get; set; }
+
     }
 }

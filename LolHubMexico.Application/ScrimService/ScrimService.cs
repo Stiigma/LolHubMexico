@@ -71,7 +71,10 @@ namespace LolHubMexico.Application.ScrimService
                     scheduled_date = newDto.scheduled_date,
                     created_by = newDto.created_by,
                     created_at = DateTime.Now,
-                    status = 0
+                    status = 0,
+                    description = newDto.description,
+                    tittle = newDto.tittle,
+                    
                 };
 
                 scrim = await _scrimRepository.CreateScrim(newScrim);
@@ -118,7 +121,9 @@ namespace LolHubMexico.Application.ScrimService
                     scheduled_date = newDto.scheduled_date,
                     created_by = newDto.created_by,
                     created_at = DateTime.Now,
-                    status = 1
+                    status = 1,
+                    description = newDto.description,
+                    tittle = newDto.tittle,
                 };
 
                 scrim = await _scrimRepository.CreateScrim(newScrim);
