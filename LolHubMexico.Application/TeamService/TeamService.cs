@@ -64,6 +64,12 @@ namespace LolHubMexico.Application
             return createdTeam;
         }
 
+        public async Task<List<Team>> GetTeams()
+        {
+            var allTeams = await _teamRepository.GetTeams();            
+            return allTeams;
+        }
+
         public async Task<bool> IsUserWithTeam(int idUser)
         {
             if (idUser == null)

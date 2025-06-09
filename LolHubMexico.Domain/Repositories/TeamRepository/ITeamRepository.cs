@@ -24,5 +24,8 @@ namespace LolHubMexico.Domain.Repositories.TeamRepository
 
         Task<Team> UpdateTeam(Team team);
 
+        Task<List<Team>> GetTeams();
+
+
     }
 }

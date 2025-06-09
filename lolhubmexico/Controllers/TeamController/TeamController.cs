@@ -112,6 +112,23 @@ namespace LolHubMexico.Controllers.TeamController
             }
         }
 
+        [HttpGet("all")]
+        public async Task<ActionResult<List<Team>>> GetTeams()
+        {
+            try
+            {
+                var teams = await _teamService.GetTeams();
+                return Ok(teams);
+            }
+            catch (AppException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error interno del servidor", detail = ex.Message });
+            }
+        }
 
         //[HttpPut("joinTeam")]
         //public async Task<ActionResult> AcceptInvitation([FromBody] JoinTeamDTO responseInvitation)

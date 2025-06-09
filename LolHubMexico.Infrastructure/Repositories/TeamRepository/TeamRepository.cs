@@ -31,6 +31,12 @@ namespace LolHubMexico.Infrastructure.Repositories.TeamRepository
             return newTeam;
         }
 
+        public async Task<List<Team>> GetTeams()
+        {
+            var teams = await _context.Teams.ToListAsync();
+            return teams;
+        }
+
 
 
         public async Task<Team> GetTeamByTeamName(string teamName)
