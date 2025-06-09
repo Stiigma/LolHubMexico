@@ -2,6 +2,7 @@
 using LolHubMexico.Application.Exceptions;
 using LolHubMexico.Application.Interfaces;
 using LolHubMexico.Application.ScrimService;
+using LolHubMexico.Application.ScrimDetailsService;
 using LolHubMexico.Domain.DTOs.Players;
 using LolHubMexico.Domain.DTOs.Scrims;
 using LolHubMexico.Domain.DTOs.Teams;
@@ -14,10 +15,12 @@ namespace LolHubMexico.Controllers.ScrimController
     public class ScrimController : ControllerBase
     {
         private readonly ScrimService _scrimPlayer;
+        private readonly ScrimDetailServices _scrimDetailServices;
 
-        public ScrimController(ScrimService scrimPlayer)
+        public ScrimController(ScrimService scrimPlayer, ScrimDetailServices scrimDetailServices)
         {
             _scrimPlayer = scrimPlayer;
+            _scrimDetailServices = scrimDetailServices;
         }
 
         [HttpPost("create-scrim")]
@@ -70,14 +73,14 @@ namespace LolHubMexico.Controllers.ScrimController
 
         [HttpPost("accept-scrim")]
 
-        public async Task<ActionResult<ScrimPDTO>> AcceptScrim()
+        public async Task<ActionResult<ScrimPDTO>> AcceptScrim([FromBody] RivalDTO rival)
         {
             try
             {
 
-                var createdScrim = await _scrimPlayer.GetScrimsPending();
+                var scrimPending = await _scrimPlayer.AcceptScrim(rival);
 
-                return Ok(createdScrim);
+                return Ok(scrimPending);
             }
             catch (AppException ex)
             {
@@ -91,6 +94,74 @@ namespace LolHubMexico.Controllers.ScrimController
             }
         }
 
+        [HttpPut("update-scrim")] 
+
+        public async Task<ActionResult<ScrimPDTO>> updateScrim([FromBody] ScrimPDTO scrim)
+        {
+            try
+            {
+
+                var updateScrim = await _scrimPlayer.updateScrim(scrim);
+
+                return Ok(updateScrim);
+            }
+            catch (AppException ex)
+            {
+                // Error personalizado que lanzas desde el servicio
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                // Otro tipo de error no controlado
+                return StatusCode(500, new { message = "Error interno del servidor", detail = ex.Message });
+            }
+        }
+
+        [HttpGet("get-activas")]
+
+        public async Task<ActionResult<ScrimPDTO>> GetActivas(int idUser)
+        {
+            try
+            {
+
+                var activeScrims = await _scrimPlayer.GetScrimsPending();
+
+                return Ok(activeScrims);
+            }
+            catch (AppException ex)
+            {
+                // Error personalizado que lanzas desde el servicio
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                // Otro tipo de error no controlado
+                return StatusCode(500, new { message = "Error interno del servidor", detail = ex.Message });
+            }
+        }
+
+        [HttpGet("get-Summoners-pending")]
+
+        public async Task<ActionResult<List<UserLinkDTO>>> GetUserDetailsPending(int idScrim, int idTeam)
+        {
+            try
+            {
+
+                var UsersLink = await _scrimDetailServices.GetDetailByIdAndTeam(idScrim, idTeam);
+
+                return Ok(UsersLink);
+            }
+            catch (AppException ex)
+            {
+                // Error personalizado que lanzas desde el servicio
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                // Otro tipo de error no controlado
+                return StatusCode(500, new { message = "Error interno del servidor", detail = ex.Message });
+            }
+        }
 
     }
 }

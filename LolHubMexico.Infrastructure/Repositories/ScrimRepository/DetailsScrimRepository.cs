@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using LolHubMexico.Domain.Entities.DatailsScrims;
 using LolHubMexico.Domain.Repositories.ScrimRepository;
 using LolHubMexico.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace LolHubMexico.Infrastructure.Repositories.ScrimRepository
 {
@@ -24,6 +25,20 @@ namespace LolHubMexico.Infrastructure.Repositories.ScrimRepository
 
             return newDetails.Entity;
 
+        }
+
+        public async Task<List<DetailsScrim>> GetDetailsById(int idDetails, int id)
+        {
+           
+            return await _context.DetailsScrim
+                    .Where(d => d.idDetailsScrim == idDetails ).ToListAsync();
+        }
+
+        public async Task<List<DetailsScrim>> GetDetailsByIdAndTeam(int idScrim, int idTeam)
+        {
+
+            return await _context.DetailsScrim
+                    .Where(d => d.idScrim == idScrim && d.idTeam == idTeam).ToListAsync();
         }
     }
 }

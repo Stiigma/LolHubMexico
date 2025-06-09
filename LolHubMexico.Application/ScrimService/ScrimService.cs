@@ -256,6 +256,34 @@ namespace LolHubMexico.Application.ScrimService
             return scrimDTOs;
         }
 
+        public async Task<ScrimPDTO> updateScrim(ScrimPDTO scrimPDTO)
+        {
+            if (scrimPDTO == null)
+                throw new AppException("Viene vacio");
+
+            var scrim = await _scrimRepository.GetScrimById(scrimPDTO.idScrim);
+
+            scrim.tittle = scrimPDTO.tittle;
+            scrim.scheduled_date = scrimPDTO.scheduled_date;
+            scrim.description = scrimPDTO.description;
+
+            var scrimEdit = await _scrimRepository.UpdateScrim(scrim);
+
+            var newScrimdto = new ScrimPDTO
+            {
+                idScrim = scrimEdit.idScrim,
+                idTeam1 = scrimEdit.idTeam1,
+                idTeam2 = scrimEdit.idTeam2,
+                scheduled_date = scrimEdit.scheduled_date,
+                tittle = scrimEdit.tittle,
+                description = scrimEdit.description,
+                status = scrimEdit.status
+
+            };
+
+            return newScrimdto;
+        }
+
 
         private bool IsValidScheduledDate(DateTime scheduledDate)
         {
@@ -271,5 +299,6 @@ namespace LolHubMexico.Application.ScrimService
 
             return true;
         }
+
     }
 }

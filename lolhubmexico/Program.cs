@@ -23,6 +23,7 @@ using LolHubMexico.Domain.Repositories.ScrimRepository;
 using LolHubMexico.Domain.Repositories.PlayerRepository;
 using LolHubMexico.Infrastructure.Repositories.PlayerRepository;
 using LolHubMexico.Infrastructure.Repositories.ScrimRepository;
+using LolHubMexico.Application.ScrimDetailsService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -62,6 +63,7 @@ builder.Services.AddScoped<IScrimRepository, ScrimRepository>();
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
 builder.Services.AddScoped<ITeamInvitationRepository, TeamInvitationRepository>();
 builder.Services.AddScoped<IDetailsScrimRepository, DetailsScrimRepository>();
+builder.Services.AddScoped<ScrimDetailServices>();
 
 // Servicios
 builder.Services.AddScoped<UserService>();

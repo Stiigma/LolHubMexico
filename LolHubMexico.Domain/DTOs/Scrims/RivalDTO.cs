@@ -11,5 +11,7 @@ namespace LolHubMexico.Domain.DTOs.Scrims
         public int idScrim { get; set; }
         public int idrival { get; set; }
         public bool IsAccept {  get; set; } = false;
+
+        public List<int> idsUsers { get; set; } = new List<int>();
     }
 }

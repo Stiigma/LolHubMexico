@@ -31,11 +31,23 @@ namespace LolHubMexico.Domain.Repositories.ScrimRepository
             return scrim;
         }
 
-        public async Task<Scrim> UpdateScrim(Scrim scrim)
+        public async Task<Scrim?> UpdateScrim(Scrim scrim)
         {
-            _context.Scrims.Update(scrim);
+            var existingScrim = await _context.Scrims.FirstOrDefaultAsync(s => s.idScrim == scrim.idScrim);
+
+            if (existingScrim == null)
+                return null;
+
+            // Actualiza campos manualmente
+            existingScrim.idTeam1 = scrim.idTeam1;
+            existingScrim.idTeam2 = scrim.idTeam2;
+            existingScrim.status = scrim.status;
+            existingScrim.scheduled_date = scrim.scheduled_date;
+            existingScrim.created_at = scrim.created_at;
+            existingScrim.description = scrim.description;
+
             await _context.SaveChangesAsync();
-            return scrim;
+            return existingScrim;
         }
 
         public async Task<List<Scrim>> GetAllScrims()
