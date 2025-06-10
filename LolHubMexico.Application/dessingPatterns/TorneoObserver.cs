@@ -14,9 +14,9 @@ namespace LolHubMexico.Application.dessingPatterns
         private readonly ITorneoRepository _torneoRepository;
         private readonly IScrimRepository _scrimRepository;
 
-        public TorneoObserver(ITorneoRepository _torneoRepository, IScrimRepository scrimRepository)
+        public TorneoObserver(ITorneoRepository torneoRepository, IScrimRepository scrimRepository)
         {
-            _torneoRepository = torneoService;
+            _torneoRepository = torneoRepository;
             _scrimRepository = scrimRepository;
         }
 

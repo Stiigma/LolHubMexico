@@ -27,6 +27,8 @@ namespace LolHubMexico.Infrastructure.Repositories.UserRepository
             return user;
         }
 
+
+
         public async Task<User> UpdateAsync(User user)
         {
             var userInDb = await _context.Users.FirstOrDefaultAsync(u => u.IdUser == user.IdUser);
