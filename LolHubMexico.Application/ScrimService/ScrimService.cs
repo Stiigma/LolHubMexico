@@ -12,6 +12,7 @@ using LolHubMexico.Domain.DTOs.Scrims;
 using LolHubMexico.Domain.Entities.DatailsScrims;
 using LolHubMexico.Domain.Entities.Scrims;
 using LolHubMexico.Domain.Entities.Users;
+using LolHubMexico.Domain.Enums;
 using LolHubMexico.Domain.Repositories.PlayerRepository;
 using LolHubMexico.Domain.Repositories.ScrimRepository;
 
@@ -74,7 +75,11 @@ namespace LolHubMexico.Application.ScrimService
                     status = 0,
                     description = newDto.description,
                     tittle = newDto.tittle,
-                    
+                    team1_result_reported = false,
+                    team2_result_reported = false,
+                    result_verification = "pending",
+
+
                 };
 
                 scrim = await _scrimRepository.CreateScrim(newScrim);
@@ -124,6 +129,9 @@ namespace LolHubMexico.Application.ScrimService
                     status = 1,
                     description = newDto.description,
                     tittle = newDto.tittle,
+                    team1_result_reported = false,
+                    team2_result_reported = false,
+                    result_verification = "pending",
                 };
 
                 scrim = await _scrimRepository.CreateScrim(newScrim);
@@ -189,7 +197,7 @@ namespace LolHubMexico.Application.ScrimService
             {
                 
                 scrim.idTeam2 = 0;
-                scrim.status = 0;
+                scrim.status = (int)ScrimStatus.Open;
                 await _scrimRepository.UpdateScrim(scrim);
                 return false;
             }
@@ -215,7 +223,7 @@ namespace LolHubMexico.Application.ScrimService
             
 
             scrim.idTeam2 = team.IdTeam;
-            scrim.status = 2;
+            scrim.status = (int)ScrimStatus.Confirmed;
 
 
             await _scrimRepository.UpdateScrim(scrim);
