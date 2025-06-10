@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LolHubMexico.Controllers.MatchDetaController
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class MatchDetaController : Controller
     {
 
