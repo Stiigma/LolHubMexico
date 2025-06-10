@@ -50,6 +50,31 @@ namespace LolHubMexico.Controllers.ScrimController
             }
         }
 
+        [HttpPost("result-scrim")]
+
+        public async Task<ActionResult> CreateTeamAsync(ScrimResultReportDTO resultScrim)
+        {
+            try
+            {
+
+                var createdScrim = await _scrimPlayer.InsertResultMatchByTeam(resultScrim);
+                var created = true;
+                if (!createdScrim)
+                    created = false;
+                return Ok(new { created });
+            }
+            catch (AppException ex)
+            {
+                // Error personalizado que lanzas desde el servicio
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                // Otro tipo de error no controlado
+                return StatusCode(500, new { message = "Error interno del servidor", detail = ex.Message });
+            }
+        }
+
         [HttpGet("get-pending")]
 
         public async Task<ActionResult<ScrimPDTO>> GetPending()
@@ -95,6 +120,7 @@ namespace LolHubMexico.Controllers.ScrimController
                 return StatusCode(500, new { message = "Error interno del servidor", detail = ex.Message });
             }
         }
+
 
         [HttpGet("details/by-id")]
 

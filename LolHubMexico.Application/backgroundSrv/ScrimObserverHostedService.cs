@@ -36,6 +36,7 @@ namespace LolHubMexico.Infrastructure.BackgroundServices
 
                        await scrimObserver.VerificarScrimsPendientesAsync();
                        await scrimObserver.CancelarScrimsInactivasAsync();
+                       await scrimObserver.VerificarScrimsReportadasAsync();
                     }
 
                     _logger.LogInformation("✅ Scrim check completed.");

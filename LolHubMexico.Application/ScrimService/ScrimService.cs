@@ -53,7 +53,8 @@ namespace LolHubMexico.Application.ScrimService
                 throw new AppException("El equipo debe de tener 5 miembros");
 
 
-
+            var ensenadaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+            var nowInEnsenada = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, ensenadaTimeZone);
             if (newDto.created_by != team.IdCapitan)
                 throw new AppException("No es capitan de Equipo");
 
@@ -71,7 +72,7 @@ namespace LolHubMexico.Application.ScrimService
                     idTeam1 = team.IdTeam,
                     scheduled_date = newDto.scheduled_date,
                     created_by = newDto.created_by,
-                    created_at = DateTime.Now,
+                    created_at = nowInEnsenada,
                     status = 0,
                     description = newDto.description,
                     tittle = newDto.tittle,                    
@@ -80,7 +81,7 @@ namespace LolHubMexico.Application.ScrimService
 
                 scrim = await _scrimRepository.CreateScrim(newScrim);
 
-               
+                
 
                 foreach (var idUser in newDto.idsUsers)
                 {
@@ -121,7 +122,7 @@ namespace LolHubMexico.Application.ScrimService
                     idTeam2 = newDto.idTeam2,
                     scheduled_date = newDto.scheduled_date,
                     created_by = newDto.created_by,
-                    created_at = DateTime.Now,
+                    created_at = nowInEnsenada,
                     status = 1,
                     description = newDto.description,
                     tittle = newDto.tittle,
@@ -322,11 +323,13 @@ namespace LolHubMexico.Application.ScrimService
 
             if(scrim == null)
                 throw new AppException("Esta Scrim ya no esta disponible");
+            var ensenadaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+            var nowInEnsenada = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, ensenadaTimeZone);
 
-            if(scrim.idTeam1 == dto.IdTeam)
+            if (scrim.idTeam1 == dto.IdTeam)
             {
                 scrim.imagePath1 = dto.ImagePath ?? "";
-                scrim.team1_reported_at = DateTime.Now;
+                scrim.team1_reported_at = nowInEnsenada;
                 scrim.result_verification = "Por Validar";
                 scrim.team1_result_reported = dto.Win;
                 scrim.idMatch1 = dto.IdMatch;
@@ -334,7 +337,7 @@ namespace LolHubMexico.Application.ScrimService
             else
             {
                 scrim.imagePath2 = dto.ImagePath ?? "";
-                scrim.team2_reported_at = DateTime.Now;
+                scrim.team2_reported_at = nowInEnsenada;
                 scrim.result_verification = "Por Validar";
                 scrim.team2_result_reported = dto.Win;
                 scrim.idMatch2 = dto.IdMatch;

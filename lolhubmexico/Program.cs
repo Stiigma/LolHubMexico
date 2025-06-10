@@ -77,6 +77,7 @@ builder.Services.AddScoped<ScrimService>();
 builder.Services.AddScoped<IRiotService, RiotService>();
 builder.Services.AddScoped<IPlayerService, PlayerService>();
 builder.Services.AddScoped<TeamInvitationService>();
+builder.Services.AddSingleton<ScrimProcessingQueue>();
 
 // Notificaciones y WebSocket
 builder.Services.AddSingleton<WebSocketConnectionManager>();

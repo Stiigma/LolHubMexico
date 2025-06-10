@@ -40,11 +40,10 @@ namespace LolHubMexico.Domain.Repositories.ScrimRepository
         public async Task<Scrim?> UpdateScrim(Scrim scrim)
         {
             var existingScrim = await _context.Scrims.FirstOrDefaultAsync(s => s.idScrim == scrim.idScrim);
-
             if (existingScrim == null)
                 return null;
 
-            // Actualiza campos manualmente
+            // Campos que siempre deben actualizarse
             existingScrim.idTeam1 = scrim.idTeam1;
             existingScrim.idTeam2 = scrim.idTeam2;
             existingScrim.status = scrim.status;
@@ -52,9 +51,21 @@ namespace LolHubMexico.Domain.Repositories.ScrimRepository
             existingScrim.created_at = scrim.created_at;
             existingScrim.description = scrim.description;
 
+            // Campos opcionales que pueden ser null
+            existingScrim.team1_result_reported = scrim.team1_result_reported;
+            existingScrim.team2_result_reported = scrim.team2_result_reported;
+            existingScrim.team1_reported_at = scrim.team1_reported_at;
+            existingScrim.team2_reported_at = scrim.team2_reported_at;
+            existingScrim.result_verification = scrim.result_verification;
+            existingScrim.imagePath1 = scrim.imagePath1;
+            existingScrim.imagePath2 = scrim.imagePath2;
+            existingScrim.idMatch1 = scrim.idMatch1;
+            existingScrim.idMatch2 = scrim.idMatch2;
+
             await _context.SaveChangesAsync();
             return existingScrim;
         }
+
 
         public async Task<List<Scrim>> GetAllScrims()
         {
