@@ -15,6 +15,8 @@ namespace LolHubMexico.Application.Interfaces
         Task<RiotSummonerDTO> GetSummonerByPuiid(string puiid);
 
         Task<MatchRiotDto?> GetStatsByMatchIdAsync(string matchId);
+
+        Task<TimelineRiotDto?> GetMatchTimelineAsync(string matchId, string region);
     }
 }
 

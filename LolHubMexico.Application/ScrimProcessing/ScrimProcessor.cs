@@ -12,6 +12,13 @@ using LolHubMexico.Domain.Entities.DatailsScrims;
 using LolHubMexico.Domain.Enums;
 using LolHubMexico.Domain.Entities.MatchDetails;
 using LolHubMexico.Domain.Repositories.MatchRepository;
+using LolHubMexico.Application.dessingPatterns;
+using LolHubMexico.Domain.Repositories;
+using LolHubMexico.Domain.Entities.ScrimLog;
+using System.Text.Json;
+using LolHubMexico.Application.ScrimServices;
+
+
 
 namespace LolHubMexico.Application.ScrimProcessing
 {
@@ -19,15 +26,20 @@ namespace LolHubMexico.Application.ScrimProcessing
     {
         private readonly IRiotService _riotMatchService;
         private readonly IDetailsScrimRepository _detailsScrimRepository;
-        private readonly IScrimRepository _scrimRepository;
+        private readonly ScrimService _scrimRepository;
         private readonly IMatchDetailsRepository _matchDetailsRepository;
-
-        public ScrimProcessor(IRiotService riotMatchService, IDetailsScrimRepository detailsScrimRepository, IScrimRepository scrimRepository, IMatchDetailsRepository matchDetailsRepository)
+        private readonly IMatchAnalysisFacade _matchAnalysisFacade;
+        private readonly IScrimLogRepository _scrimLogRepository;
+    
+        public ScrimProcessor(IRiotService riotMatchService, IDetailsScrimRepository detailsScrimRepository, ScrimService scrimRepository, IMatchDetailsRepository matchDetailsRepository, IMatchAnalysisFacade matchAnalysisFacade, IScrimLogRepository scrimLogRepository)
         {
             _riotMatchService = riotMatchService;
             _detailsScrimRepository = detailsScrimRepository;
             _scrimRepository = scrimRepository;
             _matchDetailsRepository = matchDetailsRepository;
+            _matchAnalysisFacade = matchAnalysisFacade;
+            _scrimLogRepository = scrimLogRepository;
+        
         }
 
         public async Task ProcessAsync(Scrim scrim, string idMatch)
@@ -184,7 +196,19 @@ namespace LolHubMexico.Application.ScrimProcessing
             }
             scrim.status = (int)ScrimStatus.Completed;
             // Si quieres guardar cambios en batch aquí puedes hacerlo ahora
-            await _scrimRepository.UpdateScrim(scrim);
+            var ensenadaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+            var nowInEnsenada = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, ensenadaTimeZone);
+            var jsonMatch = await _matchAnalysisFacade.GetGeminiMatchAnalysisJsonAsync(idMatch);
+            var nuevoLog = new ScrimLog
+            {
+                IdScrim = scrim.idScrim,
+                MatchId = idMatch,
+                GeminiAnalysisJson = jsonMatch != null ? JsonSerializer.Serialize(jsonMatch) : null,
+                LogDate = nowInEnsenada
+            };
+            await _scrimLogRepository.AddScrimLogAsync(nuevoLog);
+            
+            await _scrimRepository.updateScrimv2(scrim);
             await SaveMatchDetailsAsync(scrim.idScrim, match);
             // foreach (...) await _detailsScrimRepository.UpdateDetailsScrimAsync(detalle);
         }

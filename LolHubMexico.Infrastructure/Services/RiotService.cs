@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using LolHubMexico.Application.Interfaces;
 using LolHubMexico.Domain.DTOs.Players;
@@ -78,29 +79,42 @@ namespace LolHubMexico.Infrastructure.Services
             var content = await response.Content.ReadAsStringAsync();
 
             var matchData = JsonConvert.DeserializeObject<MatchRiotDto>(content);
-
-            //// Mostrar datos principales
-            //Console.WriteLine($"✅ Match ID: {matchData.metadata.matchId}");
-            //Console.WriteLine($"Duración: {matchData.info.gameDuration} segundos");
-            //Console.WriteLine($"Modo: {matchData.info.gameMode}");
-            //Console.WriteLine($"Versión: {matchData.info.gameVersion}");
-
-            //foreach (var team in matchData.info.teams)
-            //{
-            //    Console.WriteLine($" Dragones: {team.objectives.dragon?.kills ?? 0}");
-            //    Console.WriteLine($" Barones: {team.objectives.baron?.kills ?? 0}");
-            //    Console.WriteLine($" Heraldos: {team.objectives.herald?.kills ?? 0}");
-            //    Console.WriteLine($" Torres: {team.objectives.tower?.kills ?? 0}");
-            //}
-
-            //foreach (var p in matchData.info.participants)
-            //{
-            //    Console.WriteLine($"👤 {p.summonerName} ({p.championName})");
-            //    Console.WriteLine($"  KDA: {p.kills}/{p.deaths}/{p.assists}");
-            //    Console.WriteLine($"  Oro: {p.goldEarned} | Farm: {p.totalMinionsKilled} | Visión: {p.visionScore}");
-            //}
-
+         
             return matchData;
+        }
+
+
+        public async Task<TimelineRiotDto?> GetMatchTimelineAsync(string matchId, string region)
+        {
+            // Ajusta la URL base según la región (por ejemplo, "americas", "europe", "asia")
+            // La API de timeline está en la región "regional" (americas, europe, asia), no en "platform" (na1, euw1, etc.)
+            string baseUrl = $"https://americas.api.riotgames.com";
+            string requestUri = $"https://americas.api.riotgames.com/lol/match/v5/matches/{matchId}/timeline?api_key={_apiKey}";            
+
+            try
+            {
+                var response = await _httpClient.GetAsync(requestUri);
+                response.EnsureSuccessStatusCode(); // Lanza una excepción para errores HTTP
+
+                var jsonString = await response.Content.ReadAsStringAsync();
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true // Esto es crucial para que coincida con camelCase de JSON y PascalCase de C#
+                };
+
+                return System.Text.Json.JsonSerializer.Deserialize<TimelineRiotDto>(jsonString, options);
+            }
+            catch (HttpRequestException e)
+            {
+                Console.WriteLine($"Error al obtener la línea de tiempo del match: {e.Message}");
+                // Puedes manejar el error más detalladamente aquí
+                return null;
+            }
+            catch (System.Text.Json.JsonException e)
+            {
+                Console.WriteLine($"Error de deserialización JSON: {e.Message}");
+                return null;
+            }
         }
     }
 

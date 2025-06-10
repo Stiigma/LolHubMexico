@@ -15,7 +15,7 @@ using LolHubMexico.Notifiers;
 using LolHubMexico.Domain.Notifications;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
-using LolHubMexico.Application.ScrimService;
+using LolHubMexico.Application.ScrimServices;
 using LolHubMexico.Application.Interfaces;
 using LolHubMexico.Infrastructure.Services;
 using LolHubMexico.Application.PlayerService;
@@ -31,6 +31,9 @@ using LolHubMexico.Application.backgroundSrv;
 using LolHubMexico.Domain.Repositories.MatchRepository;
 using LolHubMexico.Infrastructure.Repositories.MatchDetailsRepository;
 using LolHubMexico.Application.ServicesMatchDetails;
+using LolHubMexico.Domain.Repositories;
+using LolHubMexico.Infrastructure.Repositories;
+using LolHubMexico.Application.ScrimLogService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -93,6 +96,11 @@ builder.Services.AddSingleton<INotifierFactory, NotifierFactory>();
 builder.Services.AddScoped<IScrimProcessor, ScrimProcessor>();
 builder.Services.AddScoped<IDetailsScrimRepository, DetailsScrimRepository>();
 builder.Services.AddScoped<MatchDetailService>();
+builder.Services.AddHttpClient<IGeminiApiService, GeminiApiService>();
+builder.Services.AddScoped<IMatchAnalysisFacade, MatchAnalysisFacade>();
+builder.Services.AddScoped<IScrimLogRepository, ScrimLogRepository>();
+builder.Services.AddScoped<SlogService>();
+
 var app = builder.Build();
 
 // Middleware

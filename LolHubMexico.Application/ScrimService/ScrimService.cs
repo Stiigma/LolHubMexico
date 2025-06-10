@@ -16,7 +16,7 @@ using LolHubMexico.Domain.Enums;
 using LolHubMexico.Domain.Repositories.PlayerRepository;
 using LolHubMexico.Domain.Repositories.ScrimRepository;
 
-namespace LolHubMexico.Application.ScrimService
+namespace LolHubMexico.Application.ScrimServices
 {
     public class ScrimService
     {
@@ -460,7 +460,20 @@ namespace LolHubMexico.Application.ScrimService
 
             return newScrimdto;
         }
+        public async Task<Scrim> updateScrimv2(Scrim scrimPDTO)
+        {
+            if (scrimPDTO == null)
+                throw new AppException("Viene vacio");
 
+            var scrim = await _scrimRepository.GetScrimById(scrimPDTO.idScrim);
+
+            scrim.tittle = scrimPDTO.tittle;
+            scrim.scheduled_date = scrimPDTO.scheduled_date;
+            scrim.description = scrimPDTO.description;
+
+            var scrimEdit = await _scrimRepository.UpdateScrim(scrim);
+            return scrimEdit;            
+        }
 
         private bool IsValidScheduledDate(DateTime scheduledDate)
         {

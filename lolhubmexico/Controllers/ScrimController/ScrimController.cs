@@ -1,7 +1,7 @@
 ﻿using LolHubMexico.Application;
 using LolHubMexico.Application.Exceptions;
 using LolHubMexico.Application.Interfaces;
-using LolHubMexico.Application.ScrimService;
+using LolHubMexico.Application.ScrimServices;
 using LolHubMexico.Application.ScrimDetailsService;
 using LolHubMexico.Domain.DTOs.Players;
 using LolHubMexico.Domain.DTOs.Scrims;
