@@ -25,27 +25,30 @@ namespace LolHubMexico.Application.dessingPatterns
             var scrimsPorVerificar = await _scrimRepository.GetScrimsPorEstadoAsync((int)ScrimStatus.Confirmed);
             var ensenadaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
             var nowInEnsenada = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, ensenadaTimeZone);
+
+            Console.WriteLine($"\n🕵 Verificando scrims pendientes a las {nowInEnsenada} (hora de Ensenada)\n");
+
             foreach (var scrim in scrimsPorVerificar)
             {
-                // 1. ¿Ya pasó la hora programada?
+                Console.WriteLine($"🔎 Scrim ID {scrim.idScrim} | Fecha programada: {scrim.scheduled_date}");
+
+                // ¿Ya pasó la hora programada?
                 if (scrim.scheduled_date <= nowInEnsenada)
                 {
-                    Console.WriteLine($"⏰ Scrim ID {scrim.idScrim} ya comenzó (fecha programada: {scrim.scheduled_date})");
+                    Console.WriteLine($"✅ Scrim ID {scrim.idScrim} ya debería haber comenzado. Cambiando estado a InProgress...");
 
-                    scrim.status = (int)ScrimStatus.InProgress; ; // Estado 3 = partida iniciada
+                    scrim.status = (int)ScrimStatus.InProgress;
                     await _scrimRepository.UpdateScrim(scrim);
-                    continue;
-                }
 
-                // 2. (Opcional) ¿Tiene idMatch y está lista para procesarse?
-                if (!string.IsNullOrEmpty(scrim.result))
+                    Console.WriteLine($"🟢 Estado actualizado exitosamente.\n");
+                }
+                else
                 {
-                    Console.WriteLine($"✅ Scrim ID {scrim.idScrim} ya fue procesada.");
-                    continue;
+                    Console.WriteLine($"🕓 Scrim ID {scrim.idScrim} aún no empieza. (Falta: {(scrim.scheduled_date - nowInEnsenada).TotalMinutes:N0} min)\n");
                 }
-
-                Console.WriteLine($"🟡 Scrim ID {scrim.idScrim} aún está programada (fecha futura: {scrim.scheduled_date})");
             }
+
+            Console.WriteLine("✅ Verificación completada.\n");
         }
 
         public async Task CancelarScrimsInactivasAsync()
