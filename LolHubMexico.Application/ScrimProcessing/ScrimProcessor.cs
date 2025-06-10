@@ -10,6 +10,8 @@ using LolHubMexico.Application.Exceptions;
 using LolHubMexico.Domain.Repositories.ScrimRepository;
 using LolHubMexico.Domain.Entities.DatailsScrims;
 using LolHubMexico.Domain.Enums;
+using LolHubMexico.Domain.Entities.MatchDetails;
+using LolHubMexico.Domain.Repositories.MatchRepository;
 
 namespace LolHubMexico.Application.ScrimProcessing
 {
@@ -18,12 +20,14 @@ namespace LolHubMexico.Application.ScrimProcessing
         private readonly IRiotService _riotMatchService;
         private readonly IDetailsScrimRepository _detailsScrimRepository;
         private readonly IScrimRepository _scrimRepository;
+        private readonly IMatchDetailsRepository _matchDetailsRepository;
 
-        public ScrimProcessor(IRiotService riotMatchService, IDetailsScrimRepository detailsScrimRepository, IScrimRepository scrimRepository)
+        public ScrimProcessor(IRiotService riotMatchService, IDetailsScrimRepository detailsScrimRepository, IScrimRepository scrimRepository, IMatchDetailsRepository matchDetailsRepository)
         {
             _riotMatchService = riotMatchService;
             _detailsScrimRepository = detailsScrimRepository;
             _scrimRepository = scrimRepository;
+            _matchDetailsRepository = matchDetailsRepository;
         }
 
         public async Task ProcessAsync(Scrim scrim, string idMatch)
@@ -181,7 +185,50 @@ namespace LolHubMexico.Application.ScrimProcessing
             scrim.status = (int)ScrimStatus.Completed;
             // Si quieres guardar cambios en batch aquí puedes hacerlo ahora
             await _scrimRepository.UpdateScrim(scrim);
+            await SaveMatchDetailsAsync(scrim.idScrim, match);
             // foreach (...) await _detailsScrimRepository.UpdateDetailsScrimAsync(detalle);
+        }
+
+        private async Task SaveMatchDetailsAsync(int idScrim, MatchRiotDto match)
+        {
+            var team1 = match.info.teams.FirstOrDefault(t => t.teamId == 100);
+            var team2 = match.info.teams.FirstOrDefault(t => t.teamId == 200);
+
+            if (team1 == null || team2 == null)
+            {
+                Console.WriteLine("❌ No se encontraron ambos equipos en la partida");
+                return;
+            }
+
+            var existing = await _matchDetailsRepository.GetByScrimIdAsync(idScrim);
+
+            if (existing == null)
+            {
+                var newEntry = new MatchDetail
+                {
+                    IdScrim = idScrim,
+                    GameDuration = match.info.gameDuration,
+                    GameMode = match.info.gameMode,
+                    GameVersion = match.info.gameVersion,
+                    TowersTeam1 = team1.objectives.tower.kills,
+                    TowersTeam2 = team2.objectives.tower.kills
+                };
+
+                await _matchDetailsRepository.CreateAsync(newEntry);
+                Console.WriteLine("📝 MatchDetails creado");
+            }
+            else
+            {
+                // Actualizar campos sin tocar el ID
+                existing.GameDuration = match.info.gameDuration;
+                existing.GameMode = match.info.gameMode;
+                existing.GameVersion = match.info.gameVersion;
+                existing.TowersTeam1 = team1.objectives.tower.kills;
+                existing.TowersTeam2 = team2.objectives.tower.kills;
+
+                await _matchDetailsRepository.UpdateAsync(existing);
+                Console.WriteLine("🔁 MatchDetails actualizado");
+            }
         }
 
 

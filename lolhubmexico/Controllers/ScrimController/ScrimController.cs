@@ -50,6 +50,8 @@ namespace LolHubMexico.Controllers.ScrimController
             }
         }
 
+
+
         [HttpPost("result-scrim")]
 
         public async Task<ActionResult> CreateTeamAsync(ScrimResultReportDTO resultScrim)
@@ -121,7 +123,28 @@ namespace LolHubMexico.Controllers.ScrimController
             }
         }
 
+        [HttpGet("team/by-id")]
 
+        public async Task<ActionResult<List<ScrimPDTO>>> GetScrimbyTeamid(int idTeam)
+        {
+            try
+            {
+
+                var scrim = await _scrimPlayer.GetScrimActiveTeam(idTeam);
+
+                return Ok(scrim);
+            }
+            catch (AppException ex)
+            {
+                // Error personalizado que lanzas desde el servicio
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                // Otro tipo de error no controlado
+                return StatusCode(500, new { message = "Error interno del servidor", detail = ex.Message });
+            }
+        }
         [HttpGet("details/by-id")]
 
         public async Task<ActionResult<List<DetailsScrim>>> GetScrimDetailsById(int idScrim)

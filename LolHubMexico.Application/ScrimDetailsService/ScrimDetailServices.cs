@@ -71,5 +71,7 @@ namespace LolHubMexico.Application.ScrimDetailsService
 
             return lstDetails;
         }
+
+        
     }
 }

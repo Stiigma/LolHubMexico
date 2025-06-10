@@ -24,28 +24,28 @@ namespace LolHubMexico.Controllers.PayerController
             _scrimService = scrimService;
         }
 
-        [HttpPost("procesar/{idScrim}")]
-        public async Task<IActionResult> ProcesarScrim(int idScrim, string idmatch)
-        {
-            try
-            {
-                var scrim = await _iotService.GetScrimById(idScrim);
-                if (scrim == null)
-                    return NotFound(new { message = $"Scrim con id {idScrim} no encontrada." });
+        //[HttpPost("procesar/{idScrim}")]
+        //public async Task<IActionResult> ProcesarScrim(int idScrim, string idmatch)
+        //{
+        //    try
+        //    {
+        //        var scrim = await _iotService.GetScrimById(idScrim);
+        //        if (scrim == null)
+        //            return NotFound(new { message = $"Scrim con id {idScrim} no encontrada." });
 
-                await _scrimService.ProcessAsync(scrim, idmatch);
+        //        await _scrimService.ProcessAsync(scrim, idmatch);
 
-                return Ok(new { message = "Scrim procesada correctamente." });
-            }
-            catch (AppException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = "Error interno", detail = ex.Message });
-            }
-        }
+        //        return Ok(new { message = "Scrim procesada correctamente." });
+        //    }
+        //    catch (AppException ex)
+        //    {
+        //        return BadRequest(new { message = ex.Message });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new { message = "Error interno", detail = ex.Message });
+        //    }
+        //}
 
         [HttpPost("link")]
         public async Task<IActionResult> LinkSummoner([FromBody] LinkSummonerRequest request)

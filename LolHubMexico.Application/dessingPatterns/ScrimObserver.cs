@@ -127,6 +127,7 @@ namespace LolHubMexico.Application.dessingPatterns
                     scrim.result_verification = "ReadyForValidation";
                     scrim.status = (int)ScrimStatus.Completed;
                     _processingQueue.Enqueue(scrim);
+                    Console.WriteLine($"🟢 Scrim ID {scrim.idScrim} fue añadida a la cola de validación");
                     await _scrimRepository.UpdateScrim(scrim);
                     Console.WriteLine($"📌 Marcada como 'ReadyForValidation'\n");
                 }

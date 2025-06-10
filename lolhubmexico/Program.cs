@@ -27,6 +27,10 @@ using LolHubMexico.Application.ScrimDetailsService;
 using LolHubMexico.Application.ScrimProcessing;
 using LolHubMexico.Infrastructure.BackgroundServices;
 using LolHubMexico.Application.dessingPatterns;
+using LolHubMexico.Application.backgroundSrv;
+using LolHubMexico.Domain.Repositories.MatchRepository;
+using LolHubMexico.Infrastructure.Repositories.MatchDetailsRepository;
+using LolHubMexico.Application.ServicesMatchDetails;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -78,7 +82,8 @@ builder.Services.AddScoped<IRiotService, RiotService>();
 builder.Services.AddScoped<IPlayerService, PlayerService>();
 builder.Services.AddScoped<TeamInvitationService>();
 builder.Services.AddSingleton<ScrimProcessingQueue>();
-
+builder.Services.AddHostedService<ScrimProcessorHostedService>();
+builder.Services.AddScoped<IMatchDetailsRepository, MatchDetailsRepository>();
 // Notificaciones y WebSocket
 builder.Services.AddSingleton<WebSocketConnectionManager>();
 builder.Services.AddSingleton<LolHubMexico.WebSockets.WebSocketHandler>();
@@ -86,7 +91,8 @@ builder.Services.AddScoped<INotifier, TeamInvitationNotifier>();
 builder.Services.AddScoped<TeamInvitationNotifier>();
 builder.Services.AddSingleton<INotifierFactory, NotifierFactory>();
 builder.Services.AddScoped<IScrimProcessor, ScrimProcessor>();
-
+builder.Services.AddScoped<IDetailsScrimRepository, DetailsScrimRepository>();
+builder.Services.AddScoped<MatchDetailService>();
 var app = builder.Build();
 
 // Middleware

@@ -179,6 +179,40 @@ namespace LolHubMexico.Application.ScrimService
             return true;
         }
 
+        public async Task<List<ScrimPDTO>> GetScrimActiveTeam(int idteam)
+        {
+            if (idteam == 0)
+                throw new AppException($"Error");
+
+            var team = await _teamService.getTeamById(idteam);
+            // Obtener scrims manejando posibles nulls
+            var scrimsAsTeam1 = await _scrimRepository.GetScrimsByTeam1(team.IdTeam) ?? new List<Scrim>();
+            var scrimsAsTeam2 = await _scrimRepository.GetScrimsByTeam2(team.IdTeam) ?? new List<Scrim>();
+
+            // Combinar y filtrar por status = 4
+            var filteredScrims = scrimsAsTeam1.Concat(scrimsAsTeam2)
+                                              .Where(s => s.status == 4)
+                                              .ToList();
+
+            // Mapear a DTO
+            var lstScrimDto = new List<ScrimPDTO>();
+            foreach (var item in filteredScrims)
+            {
+                lstScrimDto.Add(new ScrimPDTO
+                {
+                    idScrim = item.idScrim,
+                    idTeam1 = item.idTeam1,
+                    idTeam2 = item.idTeam2,
+                    description = item.description,
+                    scheduled_date = item.scheduled_date,
+                    status = item.status,
+                    tittle = item.tittle,                  
+                });
+            }
+            return lstScrimDto;
+        }
+
+
         public async Task<bool> AcceptScrim(RivalDTO rivalDTO)
         {
             if(rivalDTO == null) return false;
