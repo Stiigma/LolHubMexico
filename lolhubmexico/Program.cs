@@ -34,6 +34,10 @@ using LolHubMexico.Application.ServicesMatchDetails;
 using LolHubMexico.Domain.Repositories;
 using LolHubMexico.Infrastructure.Repositories;
 using LolHubMexico.Application.ScrimLogService;
+using LolHubMexico.Domain.Repositories.ITonreoRepository;
+using LolHubMexico.Infrastructure.Repositories.TonreoRepository;
+using LolHubMexico.Domain.Entities.Torneos;
+using LolHubMexico.Application.TorneoServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -100,6 +104,8 @@ builder.Services.AddHttpClient<IGeminiApiService, GeminiApiService>();
 builder.Services.AddScoped<IMatchAnalysisFacade, MatchAnalysisFacade>();
 builder.Services.AddScoped<IScrimLogRepository, ScrimLogRepository>();
 builder.Services.AddScoped<SlogService>();
+builder.Services.AddScoped<ITorneoRepository, TorneoRepository>();
+builder.Services.AddScoped<TorneoService>();
 
 var app = builder.Build();
 

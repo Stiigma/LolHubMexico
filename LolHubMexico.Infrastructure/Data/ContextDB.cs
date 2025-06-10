@@ -13,6 +13,7 @@ using LolHubMexico.Domain.Entities.ScrimLog;
 using LolHubMexico.Domain.Entities.Players;
 using LolHubMexico.Domain.Entities.DatailsScrims;
 using LolHubMexico.Domain.Entities.MatchDetails;
+using LolHubMexico.Domain.Entities.Torneos;
 
 namespace LolHubMexico.Infrastructure.Data
 {
@@ -26,6 +27,11 @@ namespace LolHubMexico.Infrastructure.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<Team> Teams { get; set; }
+
+        public DbSet<Torneo> Torneos { get; set; }
+        public DbSet<TorneoEquipo> TorneoEquipos { get; set; }
+
+        public DbSet<TorneoScrim> TorneoScrims { get; set; }
 
         public DbSet<MatchDetail> MatchDetails { get; set; }
 
