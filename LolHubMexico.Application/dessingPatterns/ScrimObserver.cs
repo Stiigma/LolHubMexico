@@ -22,7 +22,7 @@ namespace LolHubMexico.Application.dessingPatterns
 
         public async Task VerificarScrimsPendientesAsync()
         {
-            var scrimsPorVerificar = await _scrimRepository.GetScrimsPorEstadoAsync(2);
+            var scrimsPorVerificar = await _scrimRepository.GetScrimsPorEstadoAsync((int)ScrimStatus.Confirmed);
 
             foreach (var scrim in scrimsPorVerificar)
             {
@@ -49,7 +49,7 @@ namespace LolHubMexico.Application.dessingPatterns
 
         public async Task CancelarScrimsInactivasAsync()
         {
-            var scrimsEnCurso = await _scrimRepository.GetScrimsPorEstadoAsync(3);
+            var scrimsEnCurso = await _scrimRepository.GetScrimsPorEstadoAsync((int)ScrimStatus.InProgress);
 
             foreach (var scrim in scrimsEnCurso)
             {
