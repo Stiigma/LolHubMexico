@@ -23,11 +23,12 @@ namespace LolHubMexico.Application.dessingPatterns
         public async Task VerificarScrimsPendientesAsync()
         {
             var scrimsPorVerificar = await _scrimRepository.GetScrimsPorEstadoAsync((int)ScrimStatus.Confirmed);
-
+            var ensenadaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
+            var nowInEnsenada = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, ensenadaTimeZone);
             foreach (var scrim in scrimsPorVerificar)
             {
                 // 1. ¿Ya pasó la hora programada?
-                if (scrim.scheduled_date <= DateTime.Now)
+                if (scrim.scheduled_date <= nowInEnsenada)
                 {
                     Console.WriteLine($"⏰ Scrim ID {scrim.idScrim} ya comenzó (fecha programada: {scrim.scheduled_date})");
 

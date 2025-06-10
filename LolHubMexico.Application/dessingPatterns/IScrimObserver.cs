@@ -11,5 +11,7 @@ namespace LolHubMexico.Application.dessingPatterns
         Task VerificarScrimsPendientesAsync();
 
         Task CancelarScrimsInactivasAsync();
+
+        Task VerificarScrimsReportadasAsync();
     }
 }
