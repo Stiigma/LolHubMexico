@@ -24,5 +24,7 @@ namespace LolHubMexico.Domain.Repositories.ScrimRepository
 
         public Task DeleteScrim(Scrim scrim);
 
+        Task<List<Scrim>> GetScrimsPorEstadoAsync(int status);
+
     }
 }

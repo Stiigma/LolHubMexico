@@ -9,6 +9,6 @@ namespace LolHubMexico.Application.ScrimProcessing
 {
     public interface IScrimProcessor
     {
-        Task ProcessAsync(Scrim scrim);
+        Task ProcessAsync(Scrim scrim, string idMatch);
     }
 }

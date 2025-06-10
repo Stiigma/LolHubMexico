@@ -47,5 +47,33 @@ namespace LolHubMexico.Infrastructure.Repositories.ScrimRepository
             return await _context.DetailsScrim
                     .Where(d => d.idScrim == idScrim && d.idTeam == idTeam).ToListAsync();
         }
+
+        public async Task<DetailsScrim> UpdateDetailsScrimAsync(DetailsScrim updatedDetail)
+        {
+            var existing = await _context.DetailsScrim
+                .FirstOrDefaultAsync(d => d.idDetailsScrim == updatedDetail.idDetailsScrim);
+
+            if (existing == null)
+                return null;
+
+            // Actualización campo por campo
+            existing.idMatch = updatedDetail.idMatch;
+            existing.carril = updatedDetail.carril;
+            existing.teamDamagePercentage = updatedDetail.teamDamagePercentage;
+            existing.kills = updatedDetail.kills;
+            existing.deaths = updatedDetail.deaths;
+            existing.assists = updatedDetail.assists;
+            existing.goldEarned = updatedDetail.goldEarned;
+            existing.farm = updatedDetail.farm;
+            existing.visionScore = updatedDetail.visionScore;
+            existing.championName = updatedDetail.championName;
+            existing.nivel = updatedDetail.nivel;
+            existing.items = updatedDetail.items;
+            existing.idTeam = updatedDetail.idTeam;
+
+            await _context.SaveChangesAsync();
+
+            return existing;
+        }
     }
 }

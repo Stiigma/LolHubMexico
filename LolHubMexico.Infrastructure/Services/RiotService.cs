@@ -63,7 +63,7 @@ namespace LolHubMexico.Infrastructure.Services
 
         }
 
-        public async Task<MatchRiotDto> GetStatsByMatchIdAsync(int matchId)
+        public async Task<MatchRiotDto?> GetStatsByMatchIdAsync(string matchId)
         {
             var url = $"https://americas.api.riotgames.com/lol/match/v5/matches/{matchId}?api_key={_apiKey}";
             var response = await _httpClient.GetAsync(url);
@@ -79,27 +79,26 @@ namespace LolHubMexico.Infrastructure.Services
 
             var matchData = JsonConvert.DeserializeObject<MatchRiotDto>(content);
 
-            // Mostrar datos principales
-            Console.WriteLine($"✅ Match ID: {matchData.metadata.matchId}");
-            Console.WriteLine($"Duración: {matchData.info.gameDuration} segundos");
-            Console.WriteLine($"Modo: {matchData.info.gameMode}");
-            Console.WriteLine($"Versión: {matchData.info.gameVersion}");
+            //// Mostrar datos principales
+            //Console.WriteLine($"✅ Match ID: {matchData.metadata.matchId}");
+            //Console.WriteLine($"Duración: {matchData.info.gameDuration} segundos");
+            //Console.WriteLine($"Modo: {matchData.info.gameMode}");
+            //Console.WriteLine($"Versión: {matchData.info.gameVersion}");
 
-            foreach (var team in matchData.info.teams)
-            {
-                Console.WriteLine($"Equipo {team.teamId} - Ganador: {team.win}");
-                Console.WriteLine($"  Dragones: {team.objectives.dragon.kills}");
-                Console.WriteLine($"  Barones: {team.objectives.baron.kills}");
-                Console.WriteLine($"  Heraldos: {team.objectives.herald.kills}");
-                Console.WriteLine($"  Torres: {team.objectives.tower.kills}");
-            }
+            //foreach (var team in matchData.info.teams)
+            //{
+            //    Console.WriteLine($" Dragones: {team.objectives.dragon?.kills ?? 0}");
+            //    Console.WriteLine($" Barones: {team.objectives.baron?.kills ?? 0}");
+            //    Console.WriteLine($" Heraldos: {team.objectives.herald?.kills ?? 0}");
+            //    Console.WriteLine($" Torres: {team.objectives.tower?.kills ?? 0}");
+            //}
 
-            foreach (var p in matchData.info.participants)
-            {
-                Console.WriteLine($"👤 {p.summonerName} ({p.championName})");
-                Console.WriteLine($"  KDA: {p.kills}/{p.deaths}/{p.assists}");
-                Console.WriteLine($"  Oro: {p.goldEarned} | Farm: {p.totalMinionsKilled} | Visión: {p.visionScore}");
-            }
+            //foreach (var p in matchData.info.participants)
+            //{
+            //    Console.WriteLine($"👤 {p.summonerName} ({p.championName})");
+            //    Console.WriteLine($"  KDA: {p.kills}/{p.deaths}/{p.assists}");
+            //    Console.WriteLine($"  Oro: {p.goldEarned} | Farm: {p.totalMinionsKilled} | Visión: {p.visionScore}");
+            //}
 
             return matchData;
         }

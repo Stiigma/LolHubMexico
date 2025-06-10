@@ -31,6 +31,12 @@ namespace LolHubMexico.Domain.Repositories.ScrimRepository
             return scrim;
         }
 
+        public async Task<List<Scrim>> GetScrimsPorEstadoAsync(int status)
+        {
+            return await _context.Scrims
+                .Where(s => s.status == status)
+                .ToListAsync();
+        }
         public async Task<Scrim?> UpdateScrim(Scrim scrim)
         {
             var existingScrim = await _context.Scrims.FirstOrDefaultAsync(s => s.idScrim == scrim.idScrim);

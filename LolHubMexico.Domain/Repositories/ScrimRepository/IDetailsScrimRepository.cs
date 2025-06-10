@@ -15,5 +15,7 @@ namespace LolHubMexico.Domain.Repositories.ScrimRepository
         Task<List<DetailsScrim>> GetDetailsByIdAndTeam(int idDetails, int idTeam);
         
         Task<List<DetailsScrim>> GetDetailsByIdScrim(int idscrim);
+
+        Task<DetailsScrim> UpdateDetailsScrimAsync(DetailsScrim updatedDetail);
     }
 }

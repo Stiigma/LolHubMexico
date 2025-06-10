@@ -1,6 +1,10 @@
 ﻿using LolHubMexico.Application.Exceptions;
 using LolHubMexico.Application.Interfaces;
+using LolHubMexico.Application.ScrimProcessing;
+using LolHubMexico.Application.ScrimService;
 using LolHubMexico.Domain.DTOs.Players;
+using LolHubMexico.Domain.Entities.Scrims;
+using LolHubMexico.Domain.Repositories.ScrimRepository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LolHubMexico.Controllers.PayerController
@@ -10,12 +14,37 @@ namespace LolHubMexico.Controllers.PayerController
     public class PlayerController : ControllerBase
     {
         private readonly IPlayerService _playerService;
-        private readonly IRiotService _iotService;
+        private readonly IScrimRepository _iotService;
+        private readonly IScrimProcessor _scrimService;
 
-        public PlayerController(IPlayerService playerService, IRiotService iotService)
+        public PlayerController(IPlayerService playerService, IScrimRepository scrimRepository, IScrimProcessor scrimService)
         {
             _playerService = playerService;
-            _iotService = iotService;
+            _iotService = scrimRepository;
+            _scrimService = scrimService;
+        }
+
+        [HttpPost("procesar/{idScrim}")]
+        public async Task<IActionResult> ProcesarScrim(int idScrim, string idmatch)
+        {
+            try
+            {
+                var scrim = await _iotService.GetScrimById(idScrim);
+                if (scrim == null)
+                    return NotFound(new { message = $"Scrim con id {idScrim} no encontrada." });
+
+                await _scrimService.ProcessAsync(scrim, idmatch);
+
+                return Ok(new { message = "Scrim procesada correctamente." });
+            }
+            catch (AppException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error interno", detail = ex.Message });
+            }
         }
 
         [HttpPost("link")]
@@ -37,24 +66,7 @@ namespace LolHubMexico.Controllers.PayerController
                 return StatusCode(500, new { message = "Error interno del servidor", detail = ex.Message });
             }
         }
-
-        [HttpGet("prueba/{idmatch}")]
-        public async Task<ActionResult<PlayerDTO>> GetPrueba(int idmatch)
-        {
-            try
-            {
-                var player = await _iotService.GetStatsByMatchIdAsync(idmatch);
-                return Ok(player);
-            }
-            catch (AppException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = "Error interno del servidor", detail = ex.Message });
-            }
-        }
+        
 
         [HttpGet("by-user")]
         public async Task<ActionResult<PlayerDTO>> GetPlayerByIdUser([FromQuery] int idUser)

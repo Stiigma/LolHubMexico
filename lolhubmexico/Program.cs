@@ -24,11 +24,14 @@ using LolHubMexico.Domain.Repositories.PlayerRepository;
 using LolHubMexico.Infrastructure.Repositories.PlayerRepository;
 using LolHubMexico.Infrastructure.Repositories.ScrimRepository;
 using LolHubMexico.Application.ScrimDetailsService;
+using LolHubMexico.Application.ScrimProcessing;
+using LolHubMexico.Infrastructure.BackgroundServices;
+using LolHubMexico.Application.dessingPatterns;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Obtener puerto desde variable de entorno para Cloud Run
-var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
 builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
 
 // Add services
@@ -64,6 +67,8 @@ builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
 builder.Services.AddScoped<ITeamInvitationRepository, TeamInvitationRepository>();
 builder.Services.AddScoped<IDetailsScrimRepository, DetailsScrimRepository>();
 builder.Services.AddScoped<ScrimDetailServices>();
+builder.Services.AddHostedService<ScrimObserverHostedService>();
+builder.Services.AddScoped<IScrimObserver, ScrimObserver>();
 
 // Servicios
 builder.Services.AddScoped<UserService>();
@@ -79,6 +84,7 @@ builder.Services.AddSingleton<LolHubMexico.WebSockets.WebSocketHandler>();
 builder.Services.AddScoped<INotifier, TeamInvitationNotifier>();
 builder.Services.AddScoped<TeamInvitationNotifier>();
 builder.Services.AddSingleton<INotifierFactory, NotifierFactory>();
+builder.Services.AddScoped<IScrimProcessor, ScrimProcessor>();
 
 var app = builder.Build();
 
