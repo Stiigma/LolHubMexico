@@ -11,6 +11,8 @@ namespace LolHubMexico.Domain.Repositories.ITonreoRepository
     {
         Task<Torneo> CrearTorneoAsync(Torneo torneo);
         Task<Torneo?> ObtenerTorneoPorIdAsync(int idTorneo);
+
+        Task<List<Torneo>?> GetTorneosConEstado(int status);
         Task<bool> EditarTorneoAsync(Torneo torneo);
         Task<bool> EliminarTorneoAsync(int idTorneo);
 
@@ -40,6 +42,7 @@ namespace LolHubMexico.Domain.Repositories.ITonreoRepository
 
         Task<List<Torneo>> TomarTorneoEstado(int idTorneom, int status);
 
-        Task<List<Torneo>> GetTorneosConEstado(int status);
+
+        Task<List<TorneoEquipo>> TorneoEquipoByIdTeam(int idteam);
     }
 }

@@ -93,6 +93,55 @@ namespace LolHubMexico.Controllers.TorneoController
             }
         }
 
+        [HttpGet("mi-torneo/{idTeam}")]
+        public async Task<ActionResult<List<Torneo>>> misTorneos(int idTeam)
+        {
+            try
+            {
 
+                var createdTeam = await _torneoService.TomarMisTorneos(idTeam);
+                var created = true;
+                return Ok(new { created, createdTeam });
+            }
+            catch (AppException ex)
+            {
+                // Error personalizado que lanzas desde el servicio
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                // Otro tipo de error no controlado
+                return StatusCode(500, new { message = "Error interno del servidor", detail = ex.Message });
+            }
+
+
+
+        }
+
+        [HttpGet("by-id/{idTorneo}")]
+        public async Task<ActionResult<List<Torneo>>> TorneoById(int idTorneo)
+        {
+            try
+            {
+
+                var createdTeam = await _torneoService.TomarTorneoPorId(idTorneo);;
+                var created = true;
+                return Ok(new { created, createdTeam });
+            }
+            catch (AppException ex)
+            {
+                // Error personalizado que lanzas desde el servicio
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                // Otro tipo de error no controlado
+                return StatusCode(500, new { message = "Error interno del servidor", detail = ex.Message });
+            }
+
+        }
     }
+
+
+    
 }

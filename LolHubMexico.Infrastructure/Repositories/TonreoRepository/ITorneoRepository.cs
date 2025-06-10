@@ -48,6 +48,12 @@ namespace LolHubMexico.Infrastructure.Repositories.TonreoRepository
             }
         }
 
+        public async Task<List<TorneoEquipo>> TorneoEquipoByIdTeam(int idTeam)
+        {
+            return await _context.TorneoEquipos
+                .Where(te => te.IdEquipo == idTeam)
+                .ToListAsync();
+        }
 
         public async Task<TorneoScrim> CreateTorneoScrimAsync(TorneoScrim torneo)
         {

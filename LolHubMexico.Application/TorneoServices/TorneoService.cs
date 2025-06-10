@@ -77,6 +77,36 @@ namespace LolHubMexico.Application.TorneoServices
             return lst;
         }
 
+        public async Task<List<Torneo>> TomarMisTorneos(int miTeam)
+        {
+            var TeamEquipo = await _torneoRepository.TorneoEquipoByIdTeam(miTeam);
+
+            if(TeamEquipo == null)
+                return new List<Torneo>();
+
+            var lts = new List<Torneo>();
+            foreach(var t in TeamEquipo)
+            {
+                var torneo = await _torneoRepository.ObtenerTorneoPorIdAsync(t.IdTorneo);
+                if(torneo == null)
+                    continue;
+                lts.Add(torneo);
+            }
+
+            return lts;
+        }
+
+        public async Task<Torneo> TomarTorneoPorId(int idTorneo)
+        {
+            var torneo = await _torneoRepository.ObtenerTorneoPorIdAsync(idTorneo);
+
+            if(torneo == null)
+                throw new AppException("No existe ese torneo");
+
+            return torneo;
+
+        }
+
         public async Task<TorneoEquipo> UnirseATorneoAsync(int idTorneo, int idEquipo, int idUser)
         {
             // Verificar si ya existe la relación
