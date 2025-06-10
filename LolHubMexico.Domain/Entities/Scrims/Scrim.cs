@@ -35,5 +35,13 @@ namespace LolHubMexico.Domain.Entities.Scrims
         public DateTime? team1_reported_at { get; set; }
         public DateTime? team2_reported_at { get; set; }
         public string result_verification { get; set; } // pending, agreed, disputed, api-verified
+
+        public string? imagePath1 { get; set; } = string.Empty;
+
+        public string? imagePath2 { get; set; } = string.Empty;
+
+        public string? idMatch1 { get; set; } 
+
+        public string? idMatch2 { get; set; }
     }
 }

@@ -67,5 +67,41 @@ namespace LolHubMexico.Application.dessingPatterns
                 }
             }
         }
+
+        public async Task VerificarScrimsReportadasAsync()
+        {
+            var scrimsEnProceso = await _scrimRepository.GetScrimsPorEstadoAsync((int)ScrimStatus.InProgress);
+
+            foreach (var scrim in scrimsEnProceso)
+            {
+                // Validar si ambos equipos ya reportaron
+                bool team1Respondio = scrim.team1_reported_at.HasValue && scrim.team1_result_reported.HasValue;
+                bool team2Respondio = scrim.team2_reported_at.HasValue && scrim.team2_result_reported.HasValue;
+
+                if (!team1Respondio || !team2Respondio)
+                {
+                    Console.WriteLine($"🕒 Scrim {scrim.idScrim} aún no tiene respuesta de ambos equipos.");
+                    continue;
+                }
+
+                // Validación: si los resultados coinciden, hay disputa
+                if (scrim.team1_result_reported == scrim.team2_result_reported)
+                {
+                    Console.WriteLine($"⚠ Scrim {scrim.idScrim} está en disputa (ambos equipos dijeron lo mismo).");
+
+                    scrim.status = 10; // ejemplo: 10, o enum Disputed
+                    scrim.result_verification = "Disputed";
+
+                    await _scrimRepository.UpdateScrim(scrim);
+                }
+                else
+                {
+                    Console.WriteLine($"✅ Scrim {scrim.idScrim} tiene resultados opuestos. Verificada para revisión posterior.");
+                    scrim.result_verification = "ReadyForValidation"; // pendiente de comparar con API o resolver
+                    await _scrimRepository.UpdateScrim(scrim);
+                }
+            }
+        }
+
     }
 }

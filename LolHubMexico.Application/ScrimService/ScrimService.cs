@@ -74,12 +74,8 @@ namespace LolHubMexico.Application.ScrimService
                     created_at = DateTime.Now,
                     status = 0,
                     description = newDto.description,
-                    tittle = newDto.tittle,
-                    team1_result_reported = false,
-                    team2_result_reported = false,
+                    tittle = newDto.tittle,                    
                     result_verification = "pending",
-
-
                 };
 
                 scrim = await _scrimRepository.CreateScrim(newScrim);
@@ -129,8 +125,6 @@ namespace LolHubMexico.Application.ScrimService
                     status = 1,
                     description = newDto.description,
                     tittle = newDto.tittle,
-                    team1_result_reported = false,
-                    team2_result_reported = false,
                     result_verification = "pending",
                 };
 
@@ -317,6 +311,37 @@ namespace LolHubMexico.Application.ScrimService
             }).ToList();
 
             return scrimDTOs;
+        }
+
+        public async Task<bool> InsertResultMatchByTeam(ScrimResultReportDTO dto) { 
+
+            if(dto == null)
+                throw new AppException("Viene nullo el DTO");
+
+            var scrim = await _scrimRepository.GetScrimById(dto.IdScrim);
+
+            if(scrim == null)
+                throw new AppException("Esta Scrim ya no esta disponible");
+
+            if(scrim.idTeam1 == dto.IdTeam)
+            {
+                scrim.imagePath1 = dto.ImagePath ?? "";
+                scrim.team1_reported_at = DateTime.Now;
+                scrim.result_verification = "Por Validar";
+                scrim.team1_result_reported = dto.Win;
+                scrim.idMatch1 = dto.IdMatch;
+            }
+            else
+            {
+                scrim.imagePath2 = dto.ImagePath ?? "";
+                scrim.team2_reported_at = DateTime.Now;
+                scrim.result_verification = "Por Validar";
+                scrim.team2_result_reported = dto.Win;
+                scrim.idMatch2 = dto.IdMatch;
+            }
+
+          
+            return true;
         }
 
         public async Task<List<ScrimPDTO>> GetScrimsByIdUserActives(int idUser)
