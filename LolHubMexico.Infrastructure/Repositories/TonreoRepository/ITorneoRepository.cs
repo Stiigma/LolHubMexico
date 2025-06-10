@@ -64,7 +64,7 @@ namespace LolHubMexico.Infrastructure.Repositories.TonreoRepository
           
         }
 
-        public async Task<List<Torneo>> GetTorneosConEstado(int status)
+        public async Task<List<Torneo>?> GetTorneosConEstado(int status)
         {
             return await _context.Torneos
                 .Where(ts => ts.Estado == status)

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using LolHubMexico.Application.TorneoServices;
 using LolHubMexico.Domain.DTOs.Torneo;
 using Microsoft.AspNetCore.Http.HttpResults;
+using LolHubMexico.Domain.Entities.Torneos;
 
 
 namespace LolHubMexico.Controllers.TorneoController
@@ -31,6 +32,52 @@ namespace LolHubMexico.Controllers.TorneoController
             {
 
                 var createdTeam = await _torneoService.CrearTorneoAsync(newTeam);
+                var created = true;
+                return Ok(new { created, createdTeam });
+            }
+            catch (AppException ex)
+            {
+                // Error personalizado que lanzas desde el servicio
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                // Otro tipo de error no controlado
+                return StatusCode(500, new { message = "Error interno del servidor", detail = ex.Message });
+            }
+        }
+
+        [HttpPost("Entrar-Torneo")]
+
+        public async Task<ActionResult> entrarTorneo(int idTorneo, int idEquipo, int iUser)
+        {
+            try
+            {
+
+                var createdTeam = await _torneoService.UnirseATorneoAsync(idTorneo, idEquipo, iUser);
+                var created = true;
+                return Ok(new { created, createdTeam });
+            }
+            catch (AppException ex)
+            {
+                // Error personalizado que lanzas desde el servicio
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                // Otro tipo de error no controlado
+                return StatusCode(500, new { message = "Error interno del servidor", detail = ex.Message });
+            }
+        }
+
+        [HttpGet("pendientes")]
+
+        public async Task<ActionResult<List<Torneo>>> TorneosPendientes()
+        {
+            try
+            {
+
+                var createdTeam = await _torneoService.getTodosTorneoEstado(0);
                 var created = true;
                 return Ok(new { created, createdTeam });
             }
