@@ -92,5 +92,7 @@ namespace LolHubMexico.Controllers.TorneoController
                 return StatusCode(500, new { message = "Error interno del servidor", detail = ex.Message });
             }
         }
+
+
     }
 }
